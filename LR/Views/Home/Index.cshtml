@@ -1,0 +1,98 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+<div>
+    <p><b style="font-size:14px"><big>Objetivo - </big></b>Avaliar a adequação dos modelos mais utilizados de Leilão Reverso (LR) através de uma dinâmica de jogos para identificar o modelo de LR que será melhor avaliado e apropriado por parte dos fornecedores em um contexto de fornecimento de serviços de logística. Dissertação do mestrando de Clever Divino Inácio de Almeida</p>
+    <p><b style="font-size:14px"><big>Leilão Reverso (LR) - </big></b>LR é uma forma de aquisição de produto ou serviço onde o comprador faz uma solicitação publica (licitação) e fornecedores interessados concorrem com lances para ser o vencedor. O que submeter a melhor oferta (lance) será o fornecedor. Segue abaixo os modelos de LR usados:</p>
+    <ul>
+        <li style="font-size:13px"><b>Selado de primeiro preço - </b>o lance é sigiloso e aberto na data do fechamento, quem fizer a melhor oferta (preço, prazo de entrega, etc.) será o vencedor e recebe pelo menor preço de lance</li>
+        <li style="font-size:13px"><b>Selado de segundo preço - </b>o lance é sigiloso e aberto na data do fechamento, quem fizer a melhor oferta (preço, prazo de entrega, etc.) será o vencedor e recebe pelo segundo menor preço de lance</li>
+        <li style="font-size:13px"><b>Aberto de lance crescente - </b>o lance não é sigiloso e é submetido a cada rodada. É estipulado um valor mínimo inicial e aumentado automaticamente a cada rodada até que fique um ou mais licitante interessado</li>
+        <li style="font-size:13px"><b>Aberto de lance decrescente - </b>o lance não é sigiloso e é submetido a cada rodada. É estipulado um valor máximo inicial e diminuído automaticamente a cada rodada até que fique um ou mais licitante interessado</li>
+    </ul>
+    <p><b style="font-size:14px"><big>Regras do jogo: </big></b></p>
+    <ul style="font-size:13px">
+        <li><b>Composição dos jogadores - </b>1 comprador e 3 fornecedores</li>
+        <li><b>Facilitador - </b>O mestrando será o facilitador, irá ajudar os jogadores nas dúvidas relacionadas ao conceito de LR e operação do jogo, sem qualquer direcionamento favorecer um ou outro jogador</li>
+        <li>
+            <b>Duração dos LRs</b>
+            <ul>
+                <li>
+                    <b>Selado de primeiro preço – </b> com rodada única e 3 minutos de duração. Por ser o primeiro a ser jogado, terá 1 minuto a mais para efeito de aprendizado inicial do jogo
+                </li>
+                <li>
+                    <b>Selado de segundo preço – </b> com rodada única e 2 minutos de duração
+                </li>
+                <li>
+                    <b>Aberto de lance crescente e decrescente – </b> com 3 rodadas de 40 segundos cada, duração total de 2 minutos
+                </li>
+            </ul>
+        </li>
+        <li><b>Duração dos LRs abertos  - </b>3 rodadas de 2 minutos cada com contagem regressiva para cada rodada e uma para o fechamento do LR</li>
+        <li><b>Número de participações (partidas)- </b>Se o comprador não  cancelar nenhum LR, será criado um LR para cada um dos 4 modelos. Se cancelar, ao criar novo LR vai ser criado no mesmo modelo que cancelou</li>
+        <li><b>Duração total do jogo</b> - O jogo não tem limitação de tempo, ao término da participação do 4º modelo vai ser reiniciado para o 1º no próximo LR. Porém, para efeito de coleta dos dados será indicado pelo facilitador do jogo a finalização do jogo, o que não ocorrer mais que uma hora</li>
+        <li><b>Variáveis predefinidas - </b>Para facilitar o entendimento e dinâmica do jogo, o comprador e os fornecedores terão algumas variáveis predefinidas automaticamente (de forma aleatória). Com isso, o comprador poderá cancelar o LR ao final do leilão e o fornecedor poderá submeter, não submeter ou cancelar seu lance a qualquer momento antes do fechamento do LR</li>
+        <li><b>Seleção do(s) vencedor(es) - </b>Após apuração será apresentado o(s) fornecedor(es) ganhador(es) do LR</li>
+        <li><b>Avaliação do jogo - </b>Convidamos os jogadores, após participarem ao menos de 4 jogos, responder um questionário rápido para avaliarmos o experimento</li>
+    </ul>
+    <p><b style="font-size:14px"><big>Etapas do jogo: </big></b></p>
+    @{
+        if (SignInManager.IsSignedIn(User))
+        {
+            if (User.IsInRole("Comprador"))
+            {
+                <ul style="font-size:12px">
+                    <li>Efetua login e clica em Criar novo LR e avalia informações da requisição, data de abertura/fechamento, custo esperado de compra, indicador de risco e histórico dos últimos 3 vencedores. Seleciona quantos vencedores, prioridade da compra e clica em "Confirmar" para criar o LR. Após confirmado, será enviado até 3 convites aos fornecedores relacionados para participarem deste LR e será redirecionado ao "Painel do Comprador"</li>
+                    <li>No "Painel do Comprador" vai verificar/acompanhar os lances dos fornecedores e a contagem regressiva da rodada/fechamento do LR. Pode ainda avaliar o histórico dos últimos 3 vencedores para ver se vai cancelar o LR ao final ou não. Quando encerrar o LR, será mostrado os botões: "Apurar Vencedor(es)" e "Cancelar LR"</li>
+                    <li>No "Painel do Comprador", se clicar no botão "Apurar Vencedor(es)" vai ser apurado os vencedores do LR ativo e ser direcionado para a página de "Resultado"</li>
+                    <li>No "Painel do Comprador", se clicar no botão "Cancelar LR" deverá selecionar o motivo e confirmar o cancelamento. Neste caso os fornecedores serão notificados do cancelamento. Com isso deverá clicar em Criar novo LR para prosseguir com novos LRs</li>
+                    <li>Na página de "Resultado", o jogador vai verificar a classificação dos participantes do LR que acabou de apurar e também clicar no botão para avaliar o jogo</li>
+                    <li>Na página de "Resumo", o jogador vai ver o resumo de sua atuação em todas as suas interações</li>
+                </ul>
+            }
+            else if (User.IsInRole("Fornecedor"))
+            {
+                <ul style="font-size:13px">
+                    <li>Efetua login e aguarda na "Página Inicial" até receber convite para participar de LR</li>
+                    <li>Recebe o convite do comprador relacionado para participar do novo LR e clica em Participar de LR. Avalia informações da requisição, data de abertura/fechamento, modelo de leilão, prioridade de compra, indicador de risco, custo do frete (combustível por km). Seleciona o preço do frete com os dias de entrega, levando em conta o indicador de risco, prioridade da compra, modelo do LR, histórico dos últimos 3 vencedores e clicar no botão "Submeter" o lance ou clicar em "Cancelar Lance"</li>
+                    <li>Em “Participar de LR”, se clicar em "Não Submeter" deverá selecionar o motivo de não submissão e confirmar. Com isso, será redirecionado para a "Página Inicial" para aguardar convite de novo LR</li>
+                    <li>No "Painel do Fornecedor", se clicar em "Submeter" será redirecionado para o "Painel do Fornecedor" e vai acompanhar os lances dos seus concorrentes e acompanhar a contagem regressiva da rodada/fechamento do LR. Se clicar em “Não Submeter” deverá selecionar o motivo de não submissão e confirmar. Com isso, será redirecionado para a "Página Inicial" para aguardar convite de novo LR</li>
+                    <li>No "Painel do Fornecedor" poderá efetuar novo lance, se avaliar se tal ação poderá ajudá-lo a vencer o LR ou aguardar o fechamento do LR. O fornecedor pode ver abaixo o histórico de seus lances no LR e ainda ver o histórico dos últimos 3 vencedores para ajudá-lo a avaliar sua posição</li>
+                    <li>Se o comprador cancelar o LR os fornecedores relacionados receberam até 3 notificações a respeito. Com isso deverá aguardar o comprador criar novo LR para receber novo convite para participar</li>
+                    <li>Quando o comprador apurar o resultado, os fornecedores serão redirecionados para a página de "Resultado" e vão verificar a classificação dos participantes. Na página de "Resultado", o jogador vai verificar a classificação dos participantes do LR que acabou de apurar e também clicar no botão para avaliar o jogo</li>
+                    <li>Na página de "Resumo", o jogador vai ver o resumo de sua atuação em todas as suas interações</li>
+                </ul>
+            }
+        }
+        else
+        {
+            <p><b>Comprador</b></p>
+            <ul>
+                <li>Efetua login e clica em Criar novo LR e avalia informações da requisição, data de abertura/fechamento, custo esperado de compra, indicador de risco e histórico dos últimos 3 vencedores. Seleciona quantos vencedores, prioridade da compra e clica em "Confirmar" para criar o LR. Após confirmado, será enviado até 3 convites aos fornecedores relacionados para participarem deste LR e será redirecionado ao "Painel do Comprador"</li>
+                <li>No "Painel do Comprador" vai verificar/acompanhar os lances dos fornecedores e a contagem regressiva da rodada/fechamento do LR. Pode ainda avaliar o histórico dos últimos 3 vencedores para ver se vai cancelar o LR ao final ou não. Quando encerrar o LR, será mostrado os botões: "Apurar Vencedor(es)" e "Cancelar LR"</li>
+                <li>No "Painel do Comprador", se clicar no botão "Apurar Vencedor(es)" vai ser apurado os vencedores do LR ativo e ser direcionado para a página de "Resultado"</li>
+                <li>No "Painel do Comprador", se clicar no botão "Cancelar LR" deverá selecionar o motivo e confirmar o cancelamento. Neste caso os fornecedores serão notificados do cancelamento. Com isso deverá clicar em Criar novo LR para prosseguir com novos LRs</li>
+                <li>Na página de "Resultado", o jogador vai verificar a classificação dos participantes do LR que acabou de apurar e também clicar no botão para avaliar o jogo</li>
+                <li>Na página de "Resumo", o jogador vai ver o resumo de sua atuação em todas as suas interações</li>
+                <li>Obs.: a qualquer momento o jogador pode ver o resultado e o resumo, e depois retornarem ao seu painel, caso estiver com LR ativo</li>
+            </ul>
+            <p><b>Fornecedor</b></p>
+            <ul>
+                <li>Efetua login e aguarda na "Página Inicial" até receber convite para participar de LR</li>
+                <li>Recebe o convite do comprador relacionado para participar do novo LR e clica em Participar de LR. Avalia informações da requisição, data de abertura/fechamento, modelo de leilão, prioridade de compra, indicador de risco, custo do frete (combustível por km). Seleciona o preço do frete com os dias de entrega, levando em conta o indicador de risco, prioridade da compra, modelo do LR, histórico dos últimos 3 vencedores e clicar no botão "Submeter" o lance ou clicar em "Cancelar Lance"</li>
+                <li>Em “Participar de LR”, se clicar em "Não Submeter" deverá selecionar o motivo de não submissão e confirmar. Com isso, será redirecionado para a "Página Inicial" para aguardar convite de novo LR</li>
+                <li>No "Painel do Fornecedor", se clicar em "Submeter" será redirecionado para o "Painel do Fornecedor" e vai acompanhar os lances dos seus concorrentes e acompanhar a contagem regressiva da rodada/fechamento do LR. Se clicar em “Não Submeter” deverá selecionar o motivo de não submissão e confirmar. Com isso, será redirecionado para a "Página Inicial" para aguardar convite de novo LR</li>
+                <li>No "Painel do Fornecedor" poderá efetuar novo lance, se avaliar se tal ação poderá ajudá-lo a vencer o LR ou aguardar o fechamento do LR. O fornecedor pode ver abaixo o histórico de seus lances no LR e ainda ver o histórico dos últimos 3 vencedores para ajudá-lo a avaliar sua posição</li>
+                <li>Se o comprador cancelar o LR os fornecedores relacionados receberam até 3 notificações a respeito. Com isso deverá aguardar o comprador criar novo LR para receber novo convite para participar</li>
+                <li>Quando o comprador apurar o resultado, os fornecedores serão redirecionados para a página de "Resultado" e vão verificar a classificação dos participantes. Na página de "Resultado", o jogador vai verificar a classificação dos participantes do LR que acabou de apurar e também clicar no botão para avaliar o jogo</li>
+                <li>Na página de "Resumo", o jogador vai ver o resumo de sua atuação em todas as suas interações</li>
+                <li>Obs.:a qualquer momento o jogador pode ver o resultado e o resumo, e depois retornarem ao seu painel, caso estiver participando de um LR</li>
+            </ul>
+        }
+    }
+
+</div>
+

@@ -1,0 +1,509 @@
+﻿@model LR.Models.Leilao
+@{
+    ViewData["Title"] = "PainelComprador";
+}
+<style>
+    #btnVencedor {
+        margin-top: 10px;
+    }
+    #clockdiv {
+        font-family: sans-serif;
+        color: #fff;
+        display: inline-block;
+        font-weight: 100;
+        text-align: center;
+    }
+
+        #clockdiv > div {
+            padding: 10px;
+            border-radius: 3px;
+            background: #00BF96;
+            display: inline-block;
+        }
+
+        #clockdiv div > span {
+            padding: 15px;
+            border-radius: 3px;
+            background: #00816A;
+            display: inline-block;
+        }
+
+    #clockdivRodada {
+        font-family: sans-serif;
+        color: #fff;
+        display: inline-block;
+        font-weight: 100;
+        text-align: center;
+    }
+
+        #clockdivRodada > div {
+            padding: 10px;
+            border-radius: 3px;
+            background: #00BF96;
+            display: inline-block;
+        }
+
+        #clockdivRodada div > span {
+            padding: 15px;
+            border-radius: 3px;
+            background: #00816A;
+            display: inline-block;
+        }
+
+        .smalltext {
+            padding-top: 5px;
+            font-size: 16px;
+        }
+ 
+</style>
+<h1>Painel do Comprador</h1>
+<hr />
+<div class="container " id="divChat">
+    <div id="divChat" class="mylogin">
+        <div class="row" id="formChat">
+            <div class="col-sm-7">
+                <div>
+                    <dl class="row">
+                        <dt class="col-sm-4">
+                            Nr. LR
+                        </dt>
+                        <dd class="col-sm-7">
+                            @Html.DisplayFor(model => model.IdLeilao)
+                        </dd>
+                        <dt class="col-sm-4">
+                            @Html.DisplayNameFor(model => model.DataAberturaLance)
+                        </dt>
+                        <dd class="col-sm-7">
+                            @Html.DisplayFor(model => model.DataAberturaLance)
+                        </dd>
+                        <dt class="col-sm-4">
+                            @Html.DisplayNameFor(model => model.DataFechamento)
+                        </dt>
+                        <dd class="col-sm-7">
+                            @Html.DisplayFor(model => model.DataFechamento)
+                        </dd>
+                        <dt class="col-sm-4" >
+                            @Html.DisplayNameFor(model => model.Requisicao)
+                        </dt>
+                        <dd class="col-sm-12" style="font-size:11px">
+                            @Html.DisplayFor(model => model.Requisicao)
+                        </dd>
+                        <dt class="col-sm-4">
+                            @Html.DisplayNameFor(model => model.QuantidadeVencedores)
+                        </dt>
+                        <dd class="col-sm-7">
+                            @Html.DisplayFor(model => model.QuantidadeVencedores)
+                        </dd>
+                        <dt class="col-sm-4">
+                            @Html.DisplayNameFor(model => model.CustoCompraEsperado)
+                        </dt>
+                        <dd class="col-sm-7">
+                            R$ @Html.DisplayFor(model => model.CustoCompraEsperado)
+                        </dd>
+                        <dt class="col-sm-4">
+                            Prioridade da compra
+                        </dt>
+                        <dd class="col-sm-7">
+                            @if (Model.IdAtributoPrecoPrazo1 == 1)
+                            {
+                            @Html.Raw("Menor preço")
+                            }
+                            else if (Model.IdAtributoPrecoPrazo1 == 2)
+                            @Html.Raw("Menor prazo")
+                                else if (Model.IdAtributoPrecoPrazo1 == 3)
+                            @Html.Raw("Menor preço e prazo")
+                        </dd>
+                        <dt class="col-sm-4" >
+                            @Html.DisplayNameFor(model => model.IdTipoLeilaoNavigation)
+                        </dt>
+                        <dd class="col-sm-5" style="background-color:deepskyblue">
+                            @Html.DisplayFor(model => model.IdTipoLeilaoNavigation.Descricao)
+                        </dd>
+                    </dl>
+                </div>
+                <h4>Tempo para encerramento final do LR</h4>
+                <div id="clockdiv">
+                    <div>
+                        <div class="smalltextClock"><span class="minutesClock"></span> Minutos</div>
+                    </div>
+                    <div>
+                        <div class="smalltextClock"><span class="secondsClock"></span> Segundos</div>
+                    </div>
+                </div>
+
+                @if (ViewBag.IdTipoLeilao == 3 || ViewBag.IdTipoLeilao == 4)
+                {
+                <div>
+                    <h4>Tempo para encerrar a rodada</h4>
+                    <div id="clockdivRodada">
+                        <div>
+                            <div class="smalltextClockRodada"><span class="minutesClockRodada"></span> Minutos</div>
+                        </div>
+                        <div>
+                            <div class="smalltextClockRodada"><span class="secondsClockRodada"></span> Segundos</div>
+                        </div>
+                    </div>
+                    <h4>Número  rodada: <span id="spanRodada"></span>  </h4>
+                    <h4>Lance indicado p/ rodada: <span id="spanLanceInicial"></span>  </h4>
+                </div>
+                }
+                <p style="color:red;display:none" id="mensagemFinal">Clique em "Apurar Vencedor(es)" e ver os resultados ou Cancelar caso não lhe agradou. Se o LR for cancelado, ao criar novo LR será criado no mesmo modelo cancelado.</p>
+                <form class="form-horizontal" action="/FornecedorLeilao/Vencedor">
+                    <div class="form-group">
+                        <input type="hidden" name="id" value="@ViewBag.IdLeilao" />
+                        <input type="submit" id="btnVencedor" value="Apurar Vencedor(es)" class="btn btn-primary" style="display:none" />
+                    </div>
+                </form>
+                <form id="formCancelar" class="form-horizontal" action="/Leilao/CancelarLeilao">
+                    <div class="form-group">
+                        <input type="hidden" name="id" value="@ViewBag.IdLeilao" />
+                        <input type="submit" id="btnCancelar" value="Cancelar LR" class="btn btn-danger" style="display:none" />
+                    </div>
+                </form>
+                <h5>Últimos 3 lances ganhadores de Leilões Reversos</h5>
+                <table class="table" style="font-size:11px">
+                    <thead>
+                        <tr>
+                            <th>
+                                Dt. Fechamento LR
+                            </th>
+                            <th>
+                                Modelo de LR
+                            </th>
+                            <th>
+                                Prioridade do comprador
+                            </th>
+                            <th>
+                                Custo Esperado
+                            </th>
+                            <th>
+                                Lance
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.HistoricoLeilaoMV != null)
+                        {
+                        @foreach (var item in (List<HistoricoLeilaoMV>)ViewBag.HistoricoLeilaoMV)
+                            {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DataFechamento)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TipoLeilao)
+                            </td>
+                            <td>
+                                @if (item.IdOpcaoComprador == 1)
+                                        {
+                                @Html.Raw("Menor preço")
+                                        }
+                                        else if (item.IdOpcaoComprador == 2)
+                                        {
+                                @Html.Raw("Menor prazo")
+                                        }
+                                        else if (item.IdOpcaoComprador == 3)
+                                        {
+                                @Html.Raw("Menor preço e prazo")
+                                        }
+                            </td>
+                            <td>
+                                R$@Html.DisplayFor(modelItem => item.CustoEsperado)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DescAtributoPrecoPrazo)
+                            </td>
+                        </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div id="usuariosOnlineLabel">
+                <table class="table table-bordered tabelaUsuariosOnline table-responsive">
+                    <thead id="cabecalhoUsuarioOnlines">
+                        <tr>
+                            <th colspan="4" class="text-center" style="color:#1b6ec2">
+                                Concorrentes ao LR
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Rodada</th>
+                            @*<th>Sequência</th>*@
+                            <th class="text-center">Data / Hora</th>
+                            <th class="text-center">Lance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usuariosOnline"></tbody>
+                </table>
+                <p style="color:red" id="mensagemInicial">Os fornecedores foram convidados a participar. Aguarde eles efeturarem seus lances...</p>
+            </div>
+            </div>
+        </div>
+
+</div>
+
+
+@section Scripts {
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.7/signalr.min.js"></script>*@
+<script type="text/javascript">
+    var idComprador = '@Model.IdComprador';
+    var dataComprador = '@ViewBag.Data';
+    var idTipoLeilao = '@Model.IdTipoLeilao';
+    var rodada = '@Model.Rodada';
+    var valorInicial = '@Model.ValorInicial';
+    var idLeilao = '@Model.IdLeilao';
+    var timeintervalCallServer = null;
+    var lLimpa = 0;
+    $('#spanRodada').text(rodada);
+    if (idTipoLeilao == "3" || idTipoLeilao == "4") {
+        var valorInicialMoeda2 = parseFloat(valorInicial.replace(",", "."));
+        var valorInicialMoeda = valorInicialMoeda2.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+        $('#spanLanceInicial').text(valorInicialMoeda);
+    }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl('/chat')
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+
+            connection.on('broadcastComprador', function (idCompradorSender, rodadaSender, valorInicialSender, idLeilaoSender) {
+                if (idCompradorSender == idComprador && idLeilaoSender == idLeilao) {
+                    if (rodadaSender == 4) {
+                        debugger
+                        return;
+                    }
+                    if (rodadaSender == 0 || rodadaSender == null) {
+                        rodada = "Única";
+                        $('#spanRodada').text(rodada);
+                    } else if (rodadaSender != 99) {
+                        rodada = rodadaSender;
+                        var valorInicialMoeda2 = parseFloat(valorInicialSender.replace(",", "."));
+                        var valorInicialMoeda = valorInicialMoeda2.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                        $('#spanLanceInicial').text(valorInicialMoeda);
+                    }
+                    $('#spanRodada').text(rodada);
+                }
+            });
+
+            connection.on('broadcastMudaRodadaComprador', function (idCompradorSender, idLeilaoSender, rodadaSender, valorInicialSender) {
+                console.log("broadcastMudaRodada entrou idCompradorSender: " + idCompradorSender + " idLeilaoSender: " + idLeilaoSender + " rodadaSender: " + rodadaSender);
+                if (idCompradorSender == idComprador && idLeilaoSender == idLeilao) {
+                    console.log("broadcastMudaRodada passou idCompradorSender: " + idCompradorSender + " idLeilaoSender: " + idLeilaoSender + " rodadaSender: " + rodadaSender);
+                    rodada = rodadaSender;
+                    if (rodada == 4) {
+                        debugger
+                        return;
+                    }
+                    $('#spanRodada').text(rodada);
+                    if (idTipoLeilao == "3" || idTipoLeilao == "4") {
+                        var valorInicialMoeda2 = parseFloat(valorInicialSender.replace(",", "."));
+                        var valorInicialMoeda = valorInicialMoeda2.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                        $('#spanLanceInicial').text(valorInicialMoeda);
+                    }
+                    return;
+                }
+            });
+
+            connection.on('broadcastFornecedorLanceLimpa', function (idCompradorSender, idLeilaoSender) {
+                if (idCompradorSender == idComprador && idLeilaoSender == idLeilao && lLimpa < 2) {
+                    $('#usuariosOnline').empty();
+                    $('#mensagemInicial').show();
+                    if (lLimpa == 2) {
+                        clearInterval(timeintervalCallServer);
+                    }
+                    return;
+                }
+            });
+
+            connection.on('broadcastCompradorFornecedor', function (idCompradorSender, lancesJson, idLeilaoSender) {
+                if (idCompradorSender == idComprador && idLeilaoSender == idLeilao) {
+                    $('#mensagemInicial').hide();
+                    $('#usuariosOnline').empty();
+                    var lancesJsonArray = JSON.parse(lancesJson);
+                    var valorLance = "R$ *****";
+                    $.each(lancesJsonArray, function (idx, obj) {
+                        if (obj.rodada == 4) {
+                            debugger
+                            return false;
+                        }
+                        $('#mensagemInicial').hide();
+                        console.log("broadcastCompradorFornecedor " + " obj.Rodada: " + obj.Rodada + " obj.ValorInicial: " + obj.ValorInicial);
+                        if (obj.Rodada == 0 || obj.Rodada == null) {
+                            rodada = "Única";
+                        } else {
+                            if (idTipoLeilao == "3" || idTipoLeilao == "4") {
+                                var valorInicialMoeda2 = parseFloat(obj.ValorInicial.replace(",", "."));
+                                var valorInicialMoeda = valorInicialMoeda2.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                                $('#spanLanceInicial').text(valorInicialMoeda);
+                            }
+                            rodada = obj.Rodada;
+                        }
+                        $('#spanRodada').text(rodada);
+                        if (obj.IdTipoLeilao == "3" || obj.IdTipoLeilao == "4") {
+                            valorLance = obj.DescAtributoPrecoPrazo;
+                        } else {
+                            valorLance = "R$ *****";
+                        }
+                        $('#usuariosOnline').prepend('<tr class="usuarioOnline" style="color:green">' +
+                            '<td class="text-center">' + rodada + '</td>' +
+                            '<td>' + obj.Data.substr(8, 2) + "-" + obj.Data.substr(5, 2) + "-" + obj.Data.substr(0, 4) + " " +
+                            obj.Data.substr(11, 2) + ":" + obj.Data.substr(14, 2) + ":" + obj.Data.substr(17, 2) + '</td>' +
+                            '<td>' + valorLance + '</td>' + '</tr>');
+                    });
+                }
+            });
+
+            async function start() {
+                try {
+                    await connection.start();
+                    console.log("SignalR PainelComprador Connected = " + connection.connection.connectionId);
+                    console.log("idComprador: " + idComprador + " idLeilao: " + idLeilao);
+                    connection.invoke('SendComprador', idComprador, idLeilao);
+                    function callServer() {
+                        console.log("SignalR Connected idComprador: " + idComprador + " idLeilao: " + idLeilao);
+                        connection.invoke('SendComprador', idComprador, idLeilao);
+                    }
+                    timeintervalCallServer = setInterval(callServer, 10000);
+                } catch (err) {
+                    console.log("erro signal start: " + err);
+                    setTimeout(start, 10000);
+                }
+            };
+            connection.onclose(start);
+            start();
+        });
+
+        function getTimeRemaining(endtime) {
+            var t = Date.parse(endtime) - Date.parse(new Date());
+            var seconds = Math.floor((t / 1000) % 60);
+            var minutes = Math.floor((t / 1000 / 60) % 60);
+            return {
+                'total': t,
+                'minutes': minutes,
+                'seconds': seconds
+            };
+        }
+
+        function initializeClock(id, endtime) {
+            var clock = document.getElementById(id);
+            var minutesSpan = clock.querySelector('.minutesClock');
+            var secondsSpan = clock.querySelector('.secondsClock');
+            function updateClock() {
+                var t = getTimeRemaining(endtime);
+                minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+                secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+                if (t.total <= 0) {
+                    $('#mensagemFinal').show();
+                    $('#btnVencedor').show();
+                    $('#btnCancelar').show();
+                    clearInterval(timeinterval);
+                }
+            }
+            updateClock();
+            var timeinterval = setInterval(updateClock, 1000);
+        }
+
+         function initializeClockRodada1(id, endtime) {
+            var clock = document.getElementById(id);
+            var minutesSpan = clock.querySelector('.minutesClockRodada');
+            var secondsSpan = clock.querySelector('.secondsClockRodada');
+            function updateClockRodada1() {
+                var t = getTimeRemaining(endtime);
+                minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+                secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+                if (t.total <= 0) {
+                    clearInterval(timeintervalRodada);
+                    $(".minutesClockRodada").text("00");
+                    $(".secondsClockRodada").text("00");
+                    var currentTimeRodada = Date.parse('@ViewBag.DataFechamentoRodada2');
+                    console.log("initializeClockRodada1 rodada=1 rodada: " + rodada + " time: " + t.minutes + "/" + t.seconds + "/" + t.total + "/ fechamento" + '@ViewBag.DataFechamentoRodada2');
+                    var deadlineRodada = new Date(currentTimeRodada + DAYS * HOURS * 1 * 0 * MILLISECONDS);
+                    initializeClockRodada2('clockdivRodada', deadlineRodada);
+                }
+            }
+            updateClockRodada1();
+            var timeintervalRodada = setInterval(updateClockRodada1, 1000);
+        }
+
+        function initializeClockRodada2(id, endtime) {
+            var clock = document.getElementById(id);
+            var minutesSpan = clock.querySelector('.minutesClockRodada');
+            var secondsSpan = clock.querySelector('.secondsClockRodada');
+            function updateClockRodada2() {
+                var t = getTimeRemaining(endtime);
+                minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+                secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+                if (t.total <= 0) {
+                    clearInterval(timeintervalRodada2);
+                    $(".minutesClockRodada").text("00");
+                    $(".secondsClockRodada").text("00");
+                    console.log("initializeClockRodada2 rodada=1 rodada: " + rodada + " time: " + t.minutes + "/" + t.seconds + "/" + t.total + "/ fechamento" + '@ViewBag.DataFechamentoRodada3');
+                    var currentTimeRodada = Date.parse('@ViewBag.DataFechamentoRodada3');
+                    var deadlineRodada = new Date(currentTimeRodada + DAYS * HOURS * 1 * 0 * MILLISECONDS);
+                    initializeClockRodada3('clockdivRodada', deadlineRodada);
+                }
+            }
+            updateClockRodada2();
+            var timeintervalRodada2 = setInterval(updateClockRodada2, 1000);
+        }
+
+        function initializeClockRodada3(id, endtime) {
+            var clock = document.getElementById(id);
+            var minutesSpan = clock.querySelector('.minutesClockRodada');
+            var secondsSpan = clock.querySelector('.secondsClockRodada');
+            function updateClockRodada3() {
+                var t = getTimeRemaining(endtime);
+                minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+                secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+               if (t.total <= 0) {
+                 console.log("initializeClockRodada3 rodada: " + rodada + " time: " + t.minutes + "/" + t.seconds + "/" + t.total);
+                   clearInterval(timeintervalRodada3);
+                    $(".minutesClockRodada").text("00");
+                    $(".secondsClockRodada").text("00");
+                    $(".minutesClock").text("00");
+                    $(".secondsClock").text("00");
+                    return false;
+                }
+            }
+            updateClockRodada3();
+            var timeintervalRodada3 = setInterval(updateClockRodada3, 1000);
+        }
+ 
+
+        var DAYS = 1;
+        var HOURS = 1;
+        var MINUTES = 0;
+        var SECONDS = 0;
+        var MINUTESRODADA = 0;
+        var SECONDSRODADA = 0;
+        MINUTES = @ViewBag.MinutoEncerramento;
+        SECONDS = @ViewBag.SegundoEncerramento;
+        MINUTESRODADA = @ViewBag.MinutoEncerramentoRodada;
+        SECONDSRODADA = @ViewBag.SegundoEncerramentoRodada;
+        var MILLISECONDS = 1000;
+        var timeInMinutes = 10;
+        var currentTime = Date.parse('@ViewBag.DataFechamento');
+        var deadline = new Date(currentTime + DAYS * HOURS * MINUTES * SECONDS * MILLISECONDS);
+        if (SECONDS > 0 || MINUTES > 0) {
+            initializeClock('clockdiv', deadline);
+            if (idTipoLeilao == "3" || idTipoLeilao == "4") {
+                var currentTimeRodada = Date.parse('@ViewBag.DataFechamentoRodada1');
+                var deadlineRodada = new Date(currentTimeRodada + DAYS * HOURS * MINUTESRODADA * SECONDSRODADA * MILLISECONDS);
+                initializeClockRodada1('clockdivRodada', deadlineRodada);
+            }
+        } else {
+            $(".minutesClock").text("0");
+            $(".secondsClock").text("0");
+            $(".minutesClockRodada").text("00");
+            $(".secondsClockRodada").text("00");
+            $('#mensagemFinal').show();
+            $('#btnVencedor').show();
+            $('#btnCancelar').show();
+    }
+
+ 
+
+</script>
+}

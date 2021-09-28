@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Jogo de Leilão Reverso</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Game Leilão Reverso</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <partial name="_LoginPartial" />
+                    <ul class="navbar-nav flex-grow-1">
+                        @*<li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+        </li>*@
+                        @using Microsoft.AspNetCore.Identity
+                        @inject SignInManager<ApplicationUser> SignInManager
+                        @inject UserManager<ApplicationUser> UserManager
+                        @{
+                            if (SignInManager.IsSignedIn(User))
+                            {
+                                if (User.IsInRole("Comprador"))
+                                {
+                            <li><a href="/Home/Index"> Página Inicial | </a></li>
+                            <li><a href="/Leilao/Create"> Criar novo LR | </a></li>
+                            <li><a href="/CompradorFornecedor/PainelComprador"> Painel do Comprador  | </a></li>
+                            <li><a href="/FornecedorLeilao/Vencedor"> Apurar Vencedores  | </a></li>
+                            <li><a href="/Leilao/Resultado"> Resultado  | </a></li>
+                            <li><a href="/Avaliacao/Resumo"> Resumo  | </a></li>
+                            <li><a href="/Avaliacao/Questionario"> Avaliação do Jogo  </a></li>
+                                }
+                                else if (User.IsInRole("Fornecedor"))
+                                {
+                            <li><a href="/Home/Index"> Página Inicial | </a></li>
+                            <li><a href="/FornecedorLeilao/Create"> Participar de LR | </a></li>
+                            <li><a href="/FornecedorLeilao/PainelFornecedor"> Painel do Fornecedor  | </a></li>
+                            <li><a href="/FornecedorLeilao/Resultado"> Resultado   | </a></li>
+                            <li><a href="/Avaliacao/Resumo"> Resumo  | </a></li>
+                            <li><a href="/Avaliacao/Questionario"> Avaliação do Jogo  </a></li>
+                                }
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            2021 - Puc Goiás - Mestrado de Engenharia de Produção e Sistemas
+        </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.7/signalr.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+<script type="text/javascript">
+    var alerta = "@Html.Raw(TempData["Msg"])";
+    if (alerta != "") {
+       bootbox.alert("@Html.Raw(TempData["Msg"])");
+    }
+        var idFor = '@ViewBag.IdUser';
+        var perfil = '@ViewBag.Perfil';
+        var idLeilao = '@ViewBag.IdLeilao';
+        var idComp = '@ViewBag.IdComprador';
+
+    var qtdMensagem = 0;
+    document.addEventListener('DOMContentLoaded', function () {
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl('/chat')
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+
+        connection.on('broadcastCompradorFornecedorNovoLayout', function (idCompradorSender, idFornecedorSender, idLeilaoSender) {
+            if (perfil == "Fornecedor") {
+                if (idFornecedorSender == idFor && idFor.length > 1 && qtdMensagem < 1) {
+                        qtdMensagem = qtdMensagem + 1;
+                        console.log("broadcastCompradorFornecedorNovo idFornecedorSender=" + idFornecedorSender + " idFornecedor=" + idFor);
+                        bootbox.alert("O comprador do seu grupo acabou de criar um LR. Por favor clique em Participar de LR");
+                        return;
+                    }
+                }
+            });
+
+ 
+            async function start() {
+                try {
+                    await connection.start();
+                    console.log("SignalR Connected - Layout = " + connection.connection.connectionId);
+                } catch (err) {
+                    console.log(err);
+                    setTimeout(start, 10000);
+                }
+            };
+            connection.onclose(start);
+            start();
+        });
+</script>
+
+ 

@@ -1,0 +1,121 @@
+﻿@model IEnumerable<LR.Models.FornecedorLeilao>
+
+@{
+    ViewData["Title"] = "Resultado";
+}
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    if (SignInManager.IsSignedIn(User))
+    {
+        if (User.IsInRole("Fornecedor"))
+        {
+            <p style="color:red; " id="mensagemInicial">Aguarde o comprador criar novo LR. Você será convidado a participar...</p>
+        }
+    }
+}
+
+
+<h1>Resultado </h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Questionario" asp-controller="Avaliacao">Após 4 participações, Clique aqui para avaliar o jogo</a>
+</p>
+
+
+<p>Prioridade requerida pelo comprador: <b>@ViewBag.OpcaoComprador</b></p>
+<p>Qtd Vencedores indicado pelo comprador: <b>@ViewBag.QtdVencedores</b></p>
+<p>* Se ocorrer empate de lance, o fornecedor que tiver submetido primeiro terá prioridade</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Classificacao)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdFornecedorNavigation.UserName)
+            </th>
+            <th>
+                Nr. LR
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Data)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Lance)
+            </th>
+            <th>
+                Vencedor?
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Classificacao)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdFornecedorNavigation.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdLeilao)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Data)
+                </td>
+                <td>
+                    @if (item.AtributoPrecoPrazo == 9)
+                    {
+                        @Html.Raw("R$ 2,50 - 15 dias p/ entrega");
+                    }
+                    else if (item.AtributoPrecoPrazo == 8)
+                    {
+                        @Html.Raw("R$ 2,50 - 10 dias p/ entrega");
+                    }
+                    else if (item.AtributoPrecoPrazo == 7)
+                    {
+                        @Html.Raw("R$ 2,50 -  5 dias p/ entrega");
+                    }
+                    else if (item.AtributoPrecoPrazo == 6)
+                    {
+                        @Html.Raw("R$ 2,00 - 20 dias p/ entrega");
+                    }
+                    else if (item.AtributoPrecoPrazo == 5)
+                    {
+                        @Html.Raw("R$ 2,00 - 15 dias p/ entrega");
+                    }
+                    else if (item.AtributoPrecoPrazo == 4)
+                    {
+                        @Html.Raw("R$ 2,00 - 10 dias p/ entrega");
+                    }
+                    else if (item.AtributoPrecoPrazo == 3)
+                    {
+                        @Html.Raw("R$ 1,50 - 30 dias p/ entrega");
+                    }
+                    else if (item.AtributoPrecoPrazo == 2)
+                    {
+                        @Html.Raw("R$ 1,50 - 20 dias p/ entrega");
+                    }
+                    else if (item.AtributoPrecoPrazo == 1)
+                    {
+                        @Html.Raw("R$ 1,50 - 15 dias p/ entrega");
+                    }
+                </td>
+                <td>
+                    @if (item.Vendedor == true)
+                    {
+                        @Html.Raw("Sim")
+                    }
+                    else
+                    {
+                        @Html.Raw("Não")
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

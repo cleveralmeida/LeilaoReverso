@@ -1,0 +1,741 @@
+﻿@model LR.Models.Leilao
+@{
+    ViewData["Title"] = "PainelFornecedor";
+}
+<style>
+
+    #clockdiv {
+        font-family: sans-serif;
+        color: #fff;
+        display: inline-block;
+        font-weight: 100;
+        text-align: center;
+    }
+
+        #clockdiv > div {
+            padding: 10px;
+            border-radius: 3px;
+            background: #00BF96;
+            display: inline-block;
+        }
+
+        #clockdiv div > span {
+            padding: 15px;
+            border-radius: 3px;
+            background: #00816A;
+            display: inline-block;
+        }
+
+    .lucro {
+        background: green;
+        color: white;
+        text-align: center;
+    }
+
+    .prejuizo {
+        background: red;
+        color: white;
+        text-align: center;
+    }
+
+    .semlucro {
+        background: yellow;
+        color: black;
+        text-align: center;
+    }
+
+    .normal {
+        background: white;
+        color: black;
+        text-align: center;
+    }
+
+    #clockdivRodada {
+        font-family: sans-serif;
+        color: #fff;
+        display: inline-block;
+        font-weight: 100;
+        text-align: center;
+    }
+
+        #clockdivRodada > div {
+            padding: 10px;
+            border-radius: 3px;
+            background: #00BF96;
+            display: inline-block;
+        }
+
+        #clockdivRodada div > span {
+            padding: 15px;
+            border-radius: 3px;
+            background: #00816A;
+            display: inline-block;
+        }
+
+    .smalltext {
+        padding-top: 5px;
+        font-size: 16px;
+    }
+
+</style>
+<h1>Painel do Fornecedor</h1>
+<hr />
+<div class="container " id="divChat">
+    <div id="divChat" class="mylogin">
+        <div class="row" id="formChat">
+            <div class="col-sm-6">
+                <div>
+                    <dl class="row">
+                        <dt class="col-sm-6">
+                            Nr. LR
+                        </dt>
+                        <dd class="col-sm-6">
+                            @Html.DisplayFor(model => model.IdLeilao)
+                        </dd>
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.DataAberturaLance)
+                        </dt>
+                        <dd class="col-sm-6">
+                            @Html.DisplayFor(model => model.DataAberturaLance)
+                        </dd>
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.DataFechamento)
+                        </dt>
+                        <dd class="col-sm-6">
+                            @Html.DisplayFor(model => model.DataFechamento)
+                        </dd>
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.Requisicao)
+                        </dt>
+                        <dd class="col-sm-12" style="font-size:11px">
+                            @Html.DisplayFor(model => model.Requisicao)
+                        </dd>
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.IdTipoLeilaoNavigation)
+                        </dt>
+                        <dd class="col-sm-6" style="background-color:deepskyblue">
+                            @Html.DisplayFor(model => model.IdTipoLeilaoNavigation.Descricao)
+                        </dd>
+                        <dt class="col-sm-6">
+                            Prioridade do comprador
+                        </dt>
+                        <dd class="col-sm-6">
+                            @if (Model.IdAtributoPrecoPrazo1 == 1)
+                            {
+                                @Html.Raw("Menor preço")
+                            }
+                            else if (Model.IdAtributoPrecoPrazo1 == 2)
+                                @Html.Raw("Menor prazo")
+                                else if (Model.IdAtributoPrecoPrazo1 == 3)
+                                    @Html.Raw("Menor preço e prazo")
+                        </dd>
+                        <dt class="col-sm-6">
+                            Lance Atual
+                        </dt>
+                        <dd class="col-sm-6">
+                            @ViewBag.DescAtributoPrecoPrazo
+                        </dd>
+                    </dl>
+                </div>
+                <div class="row" id="divNovoLance">
+                    <div class="col-md-12">
+                        <form class="form-horizontal" action="/FornecedorLeilao/SubmeterNovoLance" id="formNovoLance">
+                            <input type="hidden" name="id" value="@ViewBag.IdFornecedorLeilao" />
+                            <dl class="row ">
+                                <dt class="col-sm-6">
+                                    <label class="control-label"><b>Novo Lance (Preço e Prazo)</b></label>
+                                </dt>
+                                <dd class="col-sm-6">
+                                    <select class="form-control" id="AtributoPrecoPrazo" name="AtributoPrecoPrazo">
+                                        <option value="" selected="selected">Selecione</option>
+                                        @foreach (var item in (SelectList)ViewBag.AtributoPrecoPrazo)
+                                        {
+                                            <option value="@(item.Value)">@item.Text</option>
+                                        }
+                                        }
+                                    </select>
+                                </dd>
+                            </dl>
+                            <dl class="row">
+                                <dt class="col-sm-6">
+                                    Lucro/Prejuízo estimado
+                                </dt>
+                                <dd class="col-sm-6" id="lucroEstimado">
+
+                                </dd>
+                            </dl>
+                            <div class="form-group">
+                                <input type="submit" id="gravarNovoLance" disabled="disabled" value="Submeter" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <form id="formCancelar" class="form-horizontal" action="/FornecedorLeilao/CancelarLeilao">
+                    <div class="form-group">
+                        <input type="hidden" name="id" value="@ViewBag.IdFornecedorLeilao" />
+                        <input type="submit" id="btnVencedor" value="Cancelar Lance" class="btn btn-danger" />
+                    </div>
+                </form>
+
+                <div>
+                    <table class="table table-bordered tabelaUsuariosOnline table-responsive">
+                        <thead id="cabecalhoUsuarioOnlines">
+                            <tr>
+                                <th colspan="4" class="text-center" style="color:blue">
+                                    Meu histórico de Lances deste LR
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Rodada</th>
+                                <th class="text-center">Data / Hora</th>
+                                <th class="text-center">Lance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="meuHistorico"></tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="col-sm-5">
+                <h4>Tempo para encerramento final do LR</h4>
+                <div id="clockdiv">
+                    <div>
+                        <div class="smalltextClock"><span class="minutesClock"></span> Minutos</div>
+                    </div>
+                    <div>
+                        <div class="smalltextClock"><span class="secondsClock"></span> Segundos</div>
+                    </div>
+                </div>
+                <p style="color:red; display:none" id="mensagemInicial">Aguarde o comprador apurar o(s) vencedor(es). Você será redirecionado para a tela de resultados...</p>
+                <br />
+                <br />
+                @if (ViewBag.IdTipoLeilao == 3 || ViewBag.IdTipoLeilao == 4)
+                {
+                    <div>
+                        <h4>Tempo para encerrar a rodada</h4>
+                        <div id="clockdivRodada">
+                            <div>
+                                <div class="smalltextClockRodada"><span class="minutesClockRodada"></span> Minutos</div>
+                            </div>
+                            <div>
+                                <div class="smalltextClockRodada"><span class="secondsClockRodada"></span> Segundos</div>
+                            </div>
+                        </div>
+                        <h4>Número  rodada: <span id="spanRodada"></span>  </h4>
+                        <h4>Lance indicado p/ rodada: <span id="spanLanceInicial"></span>  </h4>
+                    </div>
+                }
+                <div>
+                    <table class="table table-bordered tabelaUsuariosOnline table-responsive">
+                        <thead id="cabecalhoUsuarioOnlines">
+                            <tr>
+                                <th colspan="4" class="text-center" style="color: #1b6ec2">
+                                    Últimos lances dos seus concorrentes do LR
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Rodada</th>
+                                <th class="text-center">Data / Hora</th>
+                                <th class="text-center">Lance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lancesDosConcorrentes"></tbody>
+                    </table>
+                </div>
+                <h5>Últimos 3 lances ganhadores de Leilões Reversos</h5>
+                <table class="table" style="font-size:11px">
+                    <thead>
+                        <tr>
+                            <th>
+                                Dt. Fechamento LR
+                            </th>
+                            <th>
+                                Modelo de LR
+                            </th>
+                            <th>
+                                Prioridade do comprador
+                            </th>
+                            <th>
+                                Lance
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.HistoricoLeilaoMV != null)
+                        {
+                            @foreach (var item in (List<HistoricoLeilaoMV>)ViewBag.HistoricoLeilaoMV)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DataFechamento)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.TipoLeilao)
+                                    </td>
+                                    <td>
+                                        @if (item.IdOpcaoComprador == 1)
+                                        {
+                                            @Html.Raw("Menor preço")
+                                        }
+                                        else if (item.IdOpcaoComprador == 2)
+                                        {
+                                            @Html.Raw("Menor prazo")
+                                        }
+                                        else if (item.IdOpcaoComprador == 3)
+                                        {
+                                            @Html.Raw("Menor preço e prazo")
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DescAtributoPrecoPrazo)
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts {
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.7/signalr.min.js"></script>*@
+<script type="text/javascript">
+        var idComprador = '@Model.IdComprador';
+        var idFornecedor = '@ViewBag.IdFornecedor';
+        var dataComprador = '@ViewBag.Data';
+        var idTipoLeilao = '@ViewBag.IdTipoLeilao';
+        var idLeilao = '@ViewBag.IdLeilao';
+        var idCusto = '@Model.IdCurso';
+
+        var aApuracao = 0;
+        var lRCancelado = 0;
+        var timeintervalCallServer = null;
+        var fornecedorNovo = 0;
+        var rodada = '@Model.Rodada';
+        var valorInicial = '@Model.ValorInicial';
+        $('#spanRodada').text(rodada);
+        if (idTipoLeilao == "3" || idTipoLeilao == "4") {
+            var valorInicialMoeda2 = parseFloat(valorInicial.replace(",", "."));
+            var valorInicialMoeda = valorInicialMoeda2.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+            $('#spanLanceInicial').text(valorInicialMoeda);
+        }
+
+        $("#AtributoPrecoPrazo").change(function () {
+            let valor = $(this).val();
+            if (valor != "") {
+                $('#gravarNovoLance').prop('disabled', false);
+                $("#lucroEstimado").removeClass("normal");
+                $("#lucroEstimado").removeClass("prejuizo");
+                $("#lucroEstimado").removeClass("lucro");
+                $("#lucroEstimado").removeClass("semlucro");
+                if (idCusto == '1' && valor == "1") {
+                    $("#lucroEstimado").addClass("prejuizo");
+                    $('#lucroEstimado').text("R$ -0,18 - prejuízo baixo");
+                }
+                if (idCusto == '2' && valor == "1") {
+                    $("#lucroEstimado").addClass("prejuizo");
+                    $('#lucroEstimado').text("R$ -0,38 - prejuízo médio");
+                }
+                if (idCusto == '3' && valor == "1") {
+                    $("#lucroEstimado").addClass("prejuizo");
+                    $('#lucroEstimado').text("R$ -0,68 - prejuízo alto");
+                }
+                else if (idCusto == '1' && valor == "2") {
+                    $("#lucroEstimado").addClass("prejuizo");
+                    $('#lucroEstimado').text("R$ -0,10 - prejuízo baixo");
+                }
+                else if (idCusto == '2' && valor == "2") {
+                    $("#lucroEstimado").addClass("prejuizo");
+                    $('#lucroEstimado').text("R$ -0,30 - prejuízo médio");
+                }
+                else if (idCusto == '3' && valor == "2") {
+                    $("#lucroEstimado").addClass("prejuizo");
+                    $('#lucroEstimado').text("R$ -0,60 - prejuízo alto");
+                }
+                else if (idCusto == '1' && valor == "3") {
+                    $("#lucroEstimado").addClass("prejuizo");
+                    $('#lucroEstimado').text("R$ -0,02 - prejuízo baixo");
+                }
+                else if (idCusto == '2' && valor == "3") {
+                    $("#lucroEstimado").addClass("prejuizo");
+                    $('#lucroEstimado').text("R$ -0,23 - prejuízo médio");
+                }
+                else if (idCusto == '3' && valor == "3") {
+                    $("#lucroEstimado").addClass("prejuizo");
+                    $('#lucroEstimado').text("R$ -0,53 - prejuízo alto");
+                }
+                else if (idCusto == '1' && valor == "4") {
+                    $("#lucroEstimado").addClass("lucro");
+                    $('#lucroEstimado').text("R$ 0,10 - lucro baixo");
+                }
+                else if (idCusto == '2' && valor == "4") {
+                    $("#lucroEstimado").addClass("prejuizo");
+                    $('#lucroEstimado').text("R$ -0,10 - prejuízo baixo");
+                }
+                else if (idCusto == '3' && valor == "4") {
+                    $("#lucroEstimado").addClass("prejuizo");
+                    $('#lucroEstimado').text("R$ -0,40 - prejuízo alto");
+                }
+                else if (idCusto == '1' && valor == "5") {
+                    $("#lucroEstimado").addClass("lucro");
+                    $('#lucroEstimado').text("R$ 0,20 - lucro baixo");
+                }
+                else if (idCusto == '2' && valor == "5") {
+                    $("#lucroEstimado").addClass("semlucro");
+                    $('#lucroEstimado').text("R$ 0,00 - sem lucro ou prejuízo");
+                }
+                else if (idCusto == '3' && valor == "5") {
+                    $("#lucroEstimado").addClass("prejuizo");
+                    $('#lucroEstimado').text("R$ -0,30 - prejuízo baixo");
+                }
+                else if (idCusto == '1' && valor == "6") {
+                    $("#lucroEstimado").addClass("lucro");
+                    $('#lucroEstimado').text("R$ 0,30  - lucro médio");
+                }
+                else if (idCusto == '2' && valor == "6") {
+                    $("#lucroEstimado").addClass("lucro");
+                    $('#lucroEstimado').text("R$ 0,10  - lucro baixo");
+                }
+                else if (idCusto == '3' && valor == "6") {
+                    $("#lucroEstimado").addClass("prejuizo");
+                    $('#lucroEstimado').text("R$ -0,20 - prejuízo baixo");
+                }
+                else if (idCusto == '1' && valor == "7") {
+                    $("#lucroEstimado").addClass("lucro");
+                    $('#lucroEstimado').text("R$ 0,38  - lucro médio");
+                }
+                else if (idCusto == '2' && valor == "7") {
+                    $("#lucroEstimado").addClass("lucro");
+                    $('#lucroEstimado').text("R$ 0,18  - lucro baixo");
+                }
+                else if (idCusto == '3' && valor == "7") {
+                    $("#lucroEstimado").addClass("prejuizo");
+                    $('#lucroEstimado').text("R$ -0,13  - prejuízo baixo");
+                }
+                else if (idCusto == '1' && valor == "8") {
+                    $("#lucroEstimado").addClass("lucro");
+                    $('#lucroEstimado').text("R$ 0,50  - lucro alto");
+                }
+                else if (idCusto == '2' && valor == "8") {
+                    $("#lucroEstimado").addClass("lucro");
+                    $('#lucroEstimado').text("R$ 0,30  - lucro médio");
+                }
+                else if (idCusto == '3' && valor == "8") {
+                    $("#lucroEstimado").addClass("semlucro");
+                    $('#lucroEstimado').text("R$ 0,00  - sem lucro ou prejuízo");
+                }
+                else if (idCusto == '1' && valor == "9") {
+                    $("#lucroEstimado").addClass("lucro");
+                    $('#lucroEstimado').text("R$ 0,63  - lucro alto");
+                }
+                else if (idCusto == '2' && valor == "9") {
+                    $("#lucroEstimado").addClass("lucro");
+                    $('#lucroEstimado').text("R$ 0,43  - lucro médio");
+                }
+                else if (idCusto == '3' && valor == "9") {
+                    $("#lucroEstimado").addClass("lucro");
+                    $('#lucroEstimado').text("R$ 0,13  - lucro baixo");
+                }
+            } else {
+                $("#lucroEstimado").addClass("normal");
+                $('#lucroEstimado').text("");
+                $('#gravarNovoLance').prop('disabled', true);
+            }
+        });
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl('/chat')
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        connection.on('broadcastMudaRodadaFornecedor', function (idCompradorSender, idLeilaoSender, rodadaSender, valorInicialSender) {
+            console.log("broadcastMudaRodada1 idCompradorSender: " + idCompradorSender + " idLeilaoSender: " + idLeilaoSender + " rodadaSender: " + rodadaSender);
+            if (rodadaSender == 4) {
+                debugger
+                return false;
+            }
+            if (idCompradorSender == idComprador && idLeilaoSender == idLeilao) {
+                console.log("broadcastMudaRodada2 idCompradorSender: " + idCompradorSender + " idLeilaoSender: " + idLeilaoSender + " rodadaSender: " + rodadaSender);
+                rodada = rodadaSender;
+                $('#spanRodada').text(rodadaSender);
+                if (idTipoLeilao == "3" || idTipoLeilao == "4") {
+                    var valorInicialMoeda2 = parseFloat(valorInicialSender.replace(",", "."));
+                    var valorInicialMoeda = valorInicialMoeda2.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                    $('#spanLanceInicial').text(valorInicialMoeda);
+                }
+                return;
+            }
+        });
+
+        connection.on('broadcastFornecedorLRCancelado', function (idCompradorSender, idLeilaoSender, idFornecedorSender) {
+            if (idCompradorSender == idComprador && idLeilaoSender == idLeilao && idFornecedorSender && idFornecedor && lRCancelado < 1) {
+                lRCancelado = lRCancelado + 1;
+                bootbox.alert("O LR que você estava ligado foi cancelado. Por favor, clique na Página Inicial e aguarde convite de novo LR");
+                if (lRCancelado == 2) {
+                    console.log("broadcastFornecedorLRCancelado lRCancelado= " + lRCancelado + " idCompradorSender: " + idCompradorSender + " idLeilaoSender: " + idLeilaoSender);
+                    clearInterval(timeintervalCallServer);
+                }
+                return;
+            }
+        });
+
+
+        connection.on('broadcastCompradorFornecedorNovo', function (idCompradorSender, idFornecedorSender, idLeilaoSender) {
+            console.log("broadcastCompradorFornecedorNovo idFornecedorSender=" + idFornecedorSender + " idFornecedor=" + idFornecedor + " idCompradorSender=" + idCompradorSender + " idComprador=" + idComprador);
+            if (idCompradorSender == idComprador && idFornecedorSender == idFornecedor && fornecedorNovo < 1) {
+                fornecedorNovo = fornecedorNovo + 1;
+                bootbox.alert("O comprador do seu time acabou de criar um LR. Por favor clique em Participar de LR");
+                return;
+            }
+        });
+
+        connection.on('broadcastFornecedorAguardandoApuracao', function (idCompradorSender, idLeilaoSender) {
+            if (idCompradorSender == idComprador && idLeilaoSender == idLeilao && aApuracao < 1) {
+                aApuracao = aApuracao + 1;
+                bootbox.alert("O LR que você estava ligado foi encerrado. Por favor, aguarde o comprador apurar os resultados");
+                return;
+            }
+        });
+
+        connection.on('broadcastFornecedorApurado', function (idCompradorSender, idFornecedorSender, idTipoLeilaoSender, idLeilaoSender) {
+            console.log("broadcastFornecedorApurado  idCompradorSender: " + idCompradorSender + " idFornecedor=" + idFornecedor + " idFornecedorSender=" + idFornecedorSender + " idLeilaoSender: " + idLeilaoSender);
+            if (idFornecedorSender == idFornecedor && idLeilaoSender == idLeilao) {
+                    idTipoLeilao = idTipoLeilaoSender;
+                    var resultado = window.location.origin + "/FornecedorLeilao/Resultado/" + idLeilaoSender;
+                    window.location.replace(resultado);
+                    return;
+                }
+            });
+
+
+            connection.on('broadcastFornecedorLancesConcorrentes', function (idCompradorSender, lancesJson, idFornecedorSender) {
+                console.log("broadcastFornecedorLancesConcorrentes entrada " + " idCompradorSender: " + idCompradorSender + " idFornecedorSender: " + idFornecedorSender + " rodada: " + rodada);
+                if (idComprador == idCompradorSender && idFornecedorSender == idFornecedor) {
+                    var lancesJsonArray = JSON.parse(lancesJson);
+                    $('#lancesDosConcorrentes').empty();
+                    var valorLance = "R$ *****";
+                    $.each(lancesJsonArray, function (idx, obj) {
+                        if (obj.Rodada == 4) {
+                            debugger
+                            return false;
+                        }
+                        if (obj.IdFornecedor != idFornecedor) {
+                            console.log("broadcastFornecedorLancesConcorrentes entrou " + " idCompradorSender: " + idCompradorSender + " idFornecedorSender: " + idFornecedorSender + " rodada: " + rodada + " valinicial =" + obj.ValorInicial);
+                            if (obj.Rodada == 0 || obj.Rodada == null) {
+                                rodada = "Única";
+                            } else {
+                                rodada = obj.Rodada;
+                                if (idTipoLeilao == "3" || idTipoLeilao == "4") {
+                                    var valorInicialMoeda2 = parseFloat(obj.ValorInicial.replace(",", "."));
+                                    var valorInicialMoeda = valorInicialMoeda2.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                                    $('#spanLanceInicial').text(valorInicialMoeda);
+                                }
+                            }
+                            $('#spanRodada').text(rodada);
+                            if (obj.IdTipoLeilao == "3" || obj.IdTipoLeilao == "4") {
+                                valorLance = obj.DescAtributoPrecoPrazo;
+                            } else {
+                                valorLance = "R$ *****";
+                            }
+                            $('#lancesDosConcorrentes').prepend('<tr class="usuarioOnline" style="color:green">' +
+                                '<td class="text-center">' + rodada + '</td>' +
+                                '<td>' + obj.Data.substr(8, 2) + "-" + obj.Data.substr(5, 2) + "-" + obj.Data.substr(0, 4) + " " +
+                                obj.Data.substr(11, 2) + ":" + obj.Data.substr(14, 2) + ":" + obj.Data.substr(17, 2) + '</td>' +
+                                '<td>' + valorLance + '</td>' + '</tr>');
+                        }
+                    });
+                }
+            });
+
+            connection.on('broadcastFornecedorHistorico', function (idCompradorSender, fLancesJson, idFornecedorSender) {
+                console.log("broadcastFornecedorHistorico entrada rodada: " + rodada + " fornecedor = " + idFornecedor + " idFornecedorSender= " + idFornecedorSender);
+                if (idComprador == idCompradorSender && idFornecedorSender == idFornecedor) {
+                    var fLancesJsonArray = JSON.parse(fLancesJson);
+                    $('#meuHistorico').empty();
+                     $.each(fLancesJsonArray, function (idx, obj) {
+                         if (obj.rodada == 4) {
+                             debugger
+                             return false;
+                         }
+                         if (obj.Rodada == 0 || obj.Rodada == null) {
+                            rodada = "Única";
+                        } else {
+                            rodada = obj.Rodada;
+                        }
+                        if (idFornecedorSender == idFornecedor && idFornecedorSender == obj.IdFornecedor) {
+                            console.log("broadcastFornecedorHistorico entrou rodada: " + rodada + " fornecedor = " + idFornecedor + " obj.fornecedor = " + obj.IdFornecedor);
+                            $('#meuHistorico').prepend('<tr class="meuHistorico" style="color:black">' +
+                                '<td class="text-center">' + rodada + '</td>' +
+                                '<td>' + obj.Data.substr(8, 2) + "-" + obj.Data.substr(5, 2) + "-" + obj.Data.substr(0, 4) + " " +
+                                obj.Data.substr(11, 2) + ":" + obj.Data.substr(14, 2) + ":" + obj.Data.substr(17, 2) + '</td>' +
+                                '<td>' + obj.DescAtributoPrecoPrazo + '</td>' + '</tr>');
+                        }
+                    });
+                }
+            });
+
+            async function start() {
+                try {
+                    await connection.start();
+                    console.log("SignalR PainelFornecedor Connected = " + connection.connection.connectionId);
+                    console.log("SignalR Connected entrada idComprador: " + idComprador + " idLeilao: " + idLeilao);
+                    connection.invoke('SendFornecedor', idComprador, idFornecedor, idLeilao);
+                    function callServer() {
+                        console.log("SignalR Connected entrou idComprador: " + idComprador + " idLeilao: " + idLeilao);
+                        connection.invoke('SendFornecedor', idComprador, idFornecedor, idLeilao);
+                    }
+                    timeintervalCallServer = setInterval(callServer, 10000);
+                } catch (err) {
+                    console.log(err);
+                    setTimeout(start, 10000);
+                }
+            };
+            connection.onclose(start);
+            start();
+        });
+
+        function getTimeRemaining(endtime) {
+            var t = Date.parse(endtime) - Date.parse(new Date());
+            var seconds = Math.floor((t / 1000) % 60);
+            var minutes = Math.floor((t / 1000 / 60) % 60);
+            return {
+                'total': t,
+                'minutes': minutes,
+                'seconds': seconds
+            };
+        }
+
+        function initializeClock(id, endtime) {
+            var clock = document.getElementById(id);
+            var minutesSpan = clock.querySelector('.minutesClock');
+            var secondsSpan = clock.querySelector('.secondsClock');
+            function updateClock() {
+                var t = getTimeRemaining(endtime);
+                minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+                secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+                if (t.total <= 0) {
+                    console.log("initializeClock t.total <= 0: " + t.total);
+                    clearInterval(timeinterval);
+                    $("#mensagemInicial").show();
+                    $('#AtributoPrecoPrazo').prop('disabled', true);
+                    $('#divNovoLance').hide();
+                    $('#formCancelar').hide();
+                    return false;
+                }
+            }
+            updateClock();
+            var timeinterval = setInterval(updateClock, 1000);
+        }
+
+
+
+        function initializeClockRodada1(id, endtime) {
+            var clock = document.getElementById(id);
+            var minutesSpan = clock.querySelector('.minutesClockRodada');
+            var secondsSpan = clock.querySelector('.secondsClockRodada');
+            function updateClockRodada1() {
+                var t = getTimeRemaining(endtime);
+                minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+                secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+                if (t.total <= 0) {
+                    clearInterval(timeintervalRodada);
+                    $(".minutesClockRodada").text("00");
+                    $(".secondsClockRodada").text("00");
+                    var currentTimeRodada = Date.parse('@ViewBag.DataFechamentoRodada2');
+                    console.log("initializeClockRodada1 rodada=1 rodada: " + rodada + " time: " + t.minutes + "/" + t.seconds + "/" + t.total + "/ fechamento" + '@ViewBag.DataFechamentoRodada2');
+                    var deadlineRodada = new Date(currentTimeRodada + DAYS * HOURS * 1 * 0 * MILLISECONDS);
+                    initializeClockRodada2('clockdivRodada', deadlineRodada);
+                }
+            }
+            updateClockRodada1();
+            var timeintervalRodada = setInterval(updateClockRodada1, 1000);
+        }
+
+        function initializeClockRodada2(id, endtime) {
+            var clock = document.getElementById(id);
+            var minutesSpan = clock.querySelector('.minutesClockRodada');
+            var secondsSpan = clock.querySelector('.secondsClockRodada');
+            function updateClockRodada2() {
+                var t = getTimeRemaining(endtime);
+                minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+                secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+                if (t.total <= 0) {
+                    clearInterval(timeintervalRodada2);
+                    $(".minutesClockRodada").text("00");
+                    $(".secondsClockRodada").text("00");
+                    console.log("initializeClockRodada2 rodada=1 rodada: " + rodada + " time: " + t.minutes + "/" + t.seconds + "/" + t.total + "/ fechamento" + '@ViewBag.DataFechamentoRodada3');
+                    var currentTimeRodada = Date.parse('@ViewBag.DataFechamentoRodada3');
+                    var deadlineRodada = new Date(currentTimeRodada + DAYS * HOURS * 1 * 0 * MILLISECONDS);
+                    initializeClockRodada3('clockdivRodada', deadlineRodada);
+                }
+            }
+            updateClockRodada2();
+            var timeintervalRodada2 = setInterval(updateClockRodada2, 1000);
+        }
+
+        function initializeClockRodada3(id, endtime) {
+            var clock = document.getElementById(id);
+            var minutesSpan = clock.querySelector('.minutesClockRodada');
+            var secondsSpan = clock.querySelector('.secondsClockRodada');
+            function updateClockRodada3() {
+                var t = getTimeRemaining(endtime);
+                minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+                secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+               if (t.total <= 0) {
+                    clearInterval(timeintervalRodada3);
+                    $(".minutesClockRodada").text("00");
+                    $(".secondsClockRodada").text("00");
+                    console.log("initializeClockRodada3 rodada=3 rodada: " + rodada + " time: " + t.minutes + "/" + t.seconds + "/" + t.total);
+                    $(".minutesClock").text("00");
+                    $(".secondsClock").text("00");
+                    return false;
+                }
+            }
+            updateClockRodada3();
+            var timeintervalRodada3 = setInterval(updateClockRodada3, 1000);
+        }
+
+
+        var DAYS = 1;
+        var HOURS = 1;
+        var MINUTES = 0;
+        var SECONDS = 0;
+        var MINUTESRODADA = 0;
+        var SECONDSRODADA = 0;
+        MINUTES = @ViewBag.MinutoEncerramento;
+        SECONDS = @ViewBag.SegundoEncerramento;
+        MINUTESRODADA = @ViewBag.MinutoEncerramentoRodada;
+        SECONDSRODADA = @ViewBag.SegundoEncerramentoRodada;
+        var MILLISECONDS = 1000;
+        var timeInMinutes = 10;
+        var currentTime = Date.parse('@ViewBag.DataFechamento');
+        var deadline = new Date(currentTime + DAYS * HOURS * MINUTES * SECONDS * MILLISECONDS);
+        if (SECONDS > 0 || MINUTES > 0) {
+            initializeClock('clockdiv', deadline);
+            if (idTipoLeilao == "3" || idTipoLeilao == "4") {
+                console.log("initializeClockRodada START rodada=1 rodada: " + rodada  + "/ fechamento" + '@ViewBag.DataFechamentoRodada1');
+                var currentTimeRodada = Date.parse('@ViewBag.DataFechamentoRodada1');
+                var deadlineRodada = new Date(currentTimeRodada + DAYS * HOURS * MINUTESRODADA * SECONDSRODADA * MILLISECONDS);
+                initializeClockRodada1('clockdivRodada', deadlineRodada);
+            }
+        } else {
+            $("#mensagemInicial").show();
+            $(".minutesClock").text("00");
+            $(".secondsClock").text("00");
+            $(".minutesClockRodada").text("00");
+            $(".secondsClockRodada").text("00");
+            $('#AtributoPrecoPrazo').prop('disabled', true);
+            $('#divNovoLance').hide();
+            $('#formCancelar').hide();
+    }
+
+</script>
+}

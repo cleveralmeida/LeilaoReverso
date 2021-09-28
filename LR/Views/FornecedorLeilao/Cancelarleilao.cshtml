@@ -1,0 +1,52 @@
+﻿@model LR.Models.FornecedorLeilao
+
+@{
+    ViewData["Title"] = "Cancelar Lance";
+}
+
+<h1>Cancelar Lance</h1>
+
+<h3>Você tem certeza que deseja cancelar este lance?</h3>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdLeilaoNavigation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdLeilaoNavigation.Requisicao)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Data)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Data)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AtributoPrecoPrazo)
+        </dt>
+        <dd class="col-sm-3">
+            <select asp-for="AtributoPrecoPrazo" class="form-control" asp-items="ViewBag.AtributoPrecoPrazo" disabled="disabled"><option value="">Selecione</option></select>
+        </dd>
+    </dl>
+    <div class="col-sm-4">
+        <form asp-action="CancelarLeilao">
+            @*<input type="hidden" asp-for="IdFornecedorLeilao" />*@
+            <input type="hidden" name="id" value="@Model.IdFornecedorLeilao" />
+            <label class="control-label"><b>Motivo</b></label>
+            <select class="form-control" name="idJustificativa">
+                <option value="" selected="selected">Selecione</option>
+                @foreach (var item in (SelectList)ViewBag.IdJustificativa)
+                {
+                    <option value="@(item.Value)">@item.Text</option>
+                }
+                }
+            </select>
+            <br />
+
+            <input type="submit" value="Confirmar" class="btn btn-danger" />
+            <a asp-action="PainelFornecedor">Voltar ao Painel</a>
+        </form>
+    </div>
+
+</div>

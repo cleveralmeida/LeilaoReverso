@@ -1,0 +1,51 @@
+﻿@page
+@model RegisterModel2
+@{
+    ViewData["Title"] = "Cadastro de jogador";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Input.Nome"></label>
+                <input asp-for="Input.Nome" class="form-control" />
+                <span asp-validation-for="Input.Nome" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Password">Senha (3 a 6 caracteres)</label>
+                <input asp-for="Input.Password" class="form-control" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.IdTipoJogador" class="control-label"></label>
+                <select asp-for="Input.IdTipoJogador" class="form-control" asp-items="ViewBag.IdTipoJogador"><option value="">Selecione</option></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.NomeComprador"></label>
+                <input asp-for="Input.NomeComprador" class="form-control" />
+                <span asp-validation-for="Input.NomeComprador" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.IdCurso" class="control-label"></label>
+                <select asp-for="Input.IdCurso" class="form-control" asp-items="ViewBag.ListaCurso"><option value="">Selecione</option></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.IdNivelensino" class="control-label"></label>
+                <select asp-for="Input.IdNivelensino" class="form-control" asp-items="ViewBag.ListaNivelEnsino"><option value="">Selecione</option></select>
+            </div>
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </form>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

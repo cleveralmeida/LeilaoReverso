@@ -1,0 +1,207 @@
+﻿@model LR.Models.Leilao
+
+@{
+    ViewData["Title"] = "Incluir novo LR";
+}
+<style>
+    .noArrow {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        text-indent: 1px;
+        text-overflow: '';
+    }
+</style>
+<h1>Criar novo LR</h1>
+
+<form asp-action="Create" class="form-horizontal">
+    <div class="row">
+        <div class="col-sm-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="IdTipoLeilao" class="control-label"></label>
+                <select asp-for="IdTipoLeilao" class="form-control noArrow" asp-items="ViewBag.IdTipoLeilao" disabled="disabled" style="background-color:deepskyblue"><option value="">Selecione</option></select>
+                <input type="hidden" name="IdTipoLeilao2" value="@Model.IdTipoLeilao" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Requisicao" class="control-label"></label>
+                <textarea asp-for="Requisicao" name="Requisicao" class="form-control" cols="10" rows="9" disabled="disabled"></textarea>
+                <input type="hidden" name="Requisicao2" value="@Model.Requisicao" />
+                <span asp-validation-for="Requisicao" class="text-danger"></span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-sm-3">
+                    <label asp-for="QuantidadeVencedores" class="control-label"></label>
+                    <select asp-for="QuantidadeVencedores" class="form-control" asp-items="ViewBag.QuantidadeVencedores"><option value="">Selecione</option></select>
+                    @*<input type="hidden" name="IdQuantidadeVencedores" value="@ViewBag.IdQuantidadeVencedores" />*@
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-sm-5">
+                    <label for="inputCity">Prioridade da compra</label>
+                    <select asp-for="IdAtributoPrecoPrazo1" class="form-control" asp-items="ViewBag.IdAtributoPrecoPrazo1"><option value="">Selecione</option></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Confirmar" class="btn btn-primary" />
+            </div>
+        </div>
+
+        <div class="col-sm-2">
+            <div class="form-group">
+                <label asp-for="DataAberturaLance" class="control-label"></label>
+                <input type="text" class="form-control" value="@Model.DataAberturaLance" disabled="disabled" />
+                <input type="hidden" name="DataAberturaLance" value="@Model.DataAberturaLance" />
+            </div>
+            <div class="form-group">
+                <label   class="control-label ">Duração do LR</label>
+                @{
+                    if (Model.IdTipoLeilao == 3 || Model.IdTipoLeilao == 4)
+                    {
+                        <input type="text" class="form-control" value="2 minutos c/ 3 rodadas de 40 segundos" disabled="disabled" />
+                    }
+                    else if (Model.IdTipoLeilao == 1)
+                    {
+                        <input type="text" class="form-control" value="3 minutos" disabled="disabled" />
+                    }
+                    else if (Model.IdTipoLeilao == 2)
+                    {
+                        <input type="text" class="form-control" value="2 minutos" disabled="disabled" />
+                    }
+
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="CustoCompraEsperado" class="control-label"></label>
+                <select asp-for="CustoCompraEsperado" class="form-control noArrow" asp-items="ViewBag.CustoCompraEsperado" disabled="disabled"><option value="">Selecione</option></select>
+                <input type="hidden" name="IdCustoCompraEsperado" value="@ViewBag.IdCustoCompraEsperado" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NivelRisco" class="control-label"></label>
+                <select asp-for="NivelRisco" class="form-control noArrow" asp-items="ViewBag.NivelRisco" disabled="disabled"><option value="">Selecione</option></select>
+                <input type="hidden" name="IdNivelRisco" value="@ViewBag.IdNivelRisco" />
+            </div>
+
+        </div>
+        <div class="col-sm-6">
+            <br>
+            <p><l2><b>Para facilitar o entendimento e a dinâmica do jogo foi selecionado automaticamente as variáveis abaixo:</b></l2></p>
+            <ul>
+                @{
+                    if (Model.IdTipoLeilao == 1)
+                    {
+                        <li>Modelo de Leilão Reverso (LR) <b>(sequencial)</b>- Selado de primeiro preço - o lance é sigiloso e aberto na data do fechamento, quem fizer a melhor oferta (preço e prazo) será o vencedor e recebe pelo menor preço de lance</li>
+                    }
+                    else if (Model.IdTipoLeilao == 2)
+                    {
+                        <li>Modelo de Leilão Reverso (LR) <b>(sequencial)</b> - Selado de segundo preço - o lance é sigiloso e aberto na data do fechamento, quem fizer a melhor oferta (preço e prazo) será o vencedor e recebe pelo segundo menor preço de lance</li>
+                    }
+                    else if (Model.IdTipoLeilao == 3)
+                    {
+                        <li>Modelo de Leilão Reverso (LR) <b>(sequencial)</b> - Aberto de lance crescente - o lance não é sigiloso e deve ser submetido a cada rodada. É estipulado um valor mínimo inicial e aumentado automaticamente a cada rodada até que fique um ou mais licitante interessado. Serão 3 rodadas de 2 minutos, o fornecedor pode submeter em qualquer rodada e ao final da 3ª rodada o que submeter a melhor oferta será o vencedor.</li>
+
+                    }
+                    else if (Model.IdTipoLeilao == 4)
+                    {
+                        <li>Modelo de Leilão Reverso (LR) <b>(sequencial)</b>: Aberto de lance decrescente - o lance não é sigiloso e deve ser submetido a cada rodada. É estipulado um valor máximo inicial e diminuído automaticamente a cada rodada até que fique um ou mais licitante interessado. Serão 3 rodadas de 2 minutos, o fornecedor pode submeter em qualquer rodada e ao final da 3ª rodada o que submeter a melhor oferta será o vencedor.</li>
+                    }
+                }
+                <li>Indicador de Risco <b>(automatica, não selecionável) </b>- é a disposição ao risco ou não. Dependendo do nível de risco, o comprador pode selecionar a quantidade de vencedores apropriado, prioridade de compra e até mesmo poderá cancelar o LR na data de fechamento</li>
+                <li>Custo Esperado de Compra (por km) <b>(automatica, não selecionável) </b>-  é o preço do frete por km que o comprador deseja adquirir o serviço. O ideal para o comprador é que o lance ganhador seja igual ou menor que este valor. Será indicado como este custo está em relação ao praticado no mercado(abaixo do mercado, de acordo com o mercado e acima do mercado)</li>
+            </ul>
+            <p><L2><b>Ações do Comprador:</b></L2></p>
+            <ul>
+                <li>Qtd Vencedores <b>(deve ser selecionado)</b>- indica a quantidade de fornecedor(es) vencedor(es) do LR, maior que 1 indica que o risco de entrega é menor pois haverá mais de um fornecedor</li>
+                <li>Prioridade da compra <b>(deve ser selecionado)</b> - refere-se a prioridade do(s) atributo(s) requerido pelo comprador para o LR: Menor preço - o menor preço é prioridade em relação ao prazo; Menor prazo - o prazo é prioridade em relação ao preço; Menor preço e prazo - seria a menor condição levando em conta os dois atributos</li>
+                <li>Botão Confirmar - confirma a inclusão de um novo LR</li>
+            </ul>
+            <h5>Últimos 3 lances ganhadores de Leilões Reversos</h5>
+            <table class="table" style="font-size:12px">
+                <thead>
+                    <tr>
+                        <th>
+                            Dt. Fechamento
+                        </th>
+                        <th>
+                            Modelo de LR
+                        </th>
+                        <th>
+                            Prioridade do comprador
+                        </th>
+                        <th>
+                            Custo Esperado
+                        </th>
+                        <th>
+                            Lance
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.HistoricoLeilaoMV != null)
+                    {
+                        @foreach (var item in (List<HistoricoLeilaoMV>)ViewBag.HistoricoLeilaoMV)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DataFechamento)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TipoLeilao)
+                                </td>
+                                <td>
+                                    @if (item.IdOpcaoComprador == 1)
+                                    {
+                                        @Html.Raw("Menor preço")
+                                    }
+                                    else if (item.IdOpcaoComprador == 2)
+                                    {
+                                        @Html.Raw("Menor prazo")
+                                    }
+                                    else if (item.IdOpcaoComprador == 3)
+                                    {
+                                        @Html.Raw("Menor preço e prazo")
+                                    }
+                                </td>
+                                <td>
+                                    R$@Html.DisplayFor(modelItem => item.CustoEsperado)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DescAtributoPrecoPrazo)
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+
+@section scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $.validator.methods.range = function (value, element, param) {
+            var globalizedValue = value.replace(".", "");
+            globalizedValue = globalizedValue.replace(",", ".");
+            return this.optional(element) ||
+                (globalizedValue >= param[0] &&
+                    globalizedValue <= param[1]);
+        };
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:\.\d{3})+)?(?:,\d+)?$/.test(value);
+        }
+            //$(document).ready(function () {
+            //    var date = new Date();
+            //    $.datetimepicker.setLocale('pt');
+            //    var data = new Date();
+            //    $('input[type=datetime-local]').datetimepicker({
+            //        format: 'd/m/Y H:i',
+            //        onChangeDateTime: function (date, input) {
+            //            data = date;
+            //        }
+            //    }).on('change', function (ev) { $(this).datetimepicker('hide'); });
+            //    $('.data').inputmask({ mask: ['99/99/9999'] });
+            //});
+    </script>
+}

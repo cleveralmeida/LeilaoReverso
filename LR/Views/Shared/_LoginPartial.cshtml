@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims;
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var perfil = User.Identities.First(u => u.IsAuthenticated).FindFirst("Perfil")?.Value.ToString();
+        <li class="nav-item">
+            <a class="nav-link text-dark" href="#" title="Perfil">@perfil</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" href="#" title="Usuário">Olá @User.Identities.First(u => u.IsAuthenticated).FindFirst("Nome").Value!</a>
+        </li>
+        <li class="nav-item">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button type="submit" class="nav-link btn btn-link text-dark">Deslogar</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register2">Cadastrar</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    }
+</ul>

@@ -1,0 +1,500 @@
+﻿@model LR.Models.FornecedorLeilao
+
+@{
+    ViewData["Title"] = "Create";
+}
+<style>
+    #clockdiv {
+        font-family: sans-serif;
+        color: #fff;
+        display: inline-block;
+        font-weight: 100;
+        text-align: center;
+        font-size: 11px;
+        height: 30px;
+    }
+
+        #clockdiv > div {
+            border-radius: 3px;
+            background: #00BF96;
+            display: inline-block;
+        }
+
+        #clockdiv div > span {
+            padding: 10px;
+            border-radius: 3px;
+            background: #00816A;
+            display: inline-block;
+        }
+
+    .lucro {
+        background: green;
+        color: white;
+        text-align: center;
+    }
+
+    .prejuizo {
+        background: red;
+        color: white;
+        text-align: center;
+    }
+
+    .semlucro {
+        background: yellow;
+        color: black;
+        text-align: center;
+    }
+
+    .normal {
+        background: white;
+        color: black;
+        text-align: center;
+    }
+    .noArrow {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        text-indent: 1px;
+        text-overflow: '';
+    }
+
+ 
+.col-sm-6 {
+    margin-left: -17px;
+}
+</style>
+<h1>Participar de LR</h1>
+
+<hr />
+<div class="row">
+    <div class="col-sm-5">
+        <form asp-action="Create" id="formulario">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="IdLeilao" value="@ViewBag.IdLeilao " />
+            <dl class="row">
+                <dt class="col-sm-6">
+                    Dt Abertura Leilão
+                </dt>
+                <dd class="col-sm-5">
+                    @ViewBag.DataAberturaLance
+                </dd>
+                <dt class="col-sm-6">
+                    Data Fechamento Leilão
+                </dt>
+                <dd class="col-sm-5">
+                    @*@ViewBag.DataFechamento*@
+                    <div>
+                        <div id="clockdiv">
+                            <div>
+                                <div class="smalltextClock">
+                                    <span class="minutesClock"></span>
+                                    Minutos
+                                </div>
+                            </div>
+                            <div>
+                                <div class="smalltextClock"><span class="secondsClock"></span>Segundos</div>
+                            </div>
+                        </div>
+                    </div>
+                </dd>
+                <dt class="col-sm-6">
+                    Requisicao
+                </dt>
+                <dd class="col-sm-12" style="font-size:11px">
+                    @ViewBag.Requisicao
+                </dd>
+                <dt class="col-sm-6">
+                    Tipo Leilão
+                </dt>
+                <dd class="col-sm-5" style="background-color:deepskyblue">
+                    @ViewBag.TipoLeilaoDescricao
+                </dd>
+                <dt class="col-sm-6">
+                    Prioridade do comprador
+                </dt>
+                <dd class="col-sm-6">
+                    @if (ViewBag.IdOpcaoComprador == 1)
+                    {
+                        @Html.Raw("Menor preço")
+                    }
+                    else if (ViewBag.IdOpcaoComprador == 2)
+                        @Html.Raw("Menor prazo")
+                        else if (ViewBag.IdOpcaoComprador == 3)
+                            @Html.Raw("Menor preço e prazo")
+                </dd>
+
+                <dt class="col-sm-6">
+                    <label asp-for="NivelRisco" class="control-label"></label>
+                </dt>
+                <dd class="col-sm-6">
+                    <select asp-for="NivelRisco" class="form-control noArrow" asp-items="@ViewBag.NivelRisco" disabled="disabled"><option value="">Selecione</option></select>
+                    <input type="hidden" name="IdNivelRisco" value="@ViewBag.IdNivelRisco" />
+                </dd>
+                <dt class="col-sm-6">
+                    <label asp-for="CustoServicoFrete" class="control-label"></label>
+                </dt>
+                <dd class="col-sm-6">
+                    <select asp-for="CustoServicoFrete" class="form-control noArrow" asp-items="ViewBag.CustoServicoFrete" disabled="disabled"><option value="">Selecione</option></select>
+                    <input type="hidden" name="IdCusto" value="@ViewBag.IdCusto" />
+                    <label class="control-label" style="font-size:11px">* Custo = por km rodado</label>
+                </dd>
+                <dt class="col-sm-6">
+                    <label asp-for="AtributoPrecoPrazo" class="control-label"></label>
+                </dt>
+                <dd class="col-sm-6">
+                    <select asp-for="AtributoPrecoPrazo" class="form-control" asp-items="ViewBag.AtributoPrecoPrazo"><option value="">Selecione</option></select>
+                    <label class="control-label" style="font-size:11px">* Preço do Lance = Custos + Despesas + Lucro</label>
+                </dd>
+                <dt class="col-sm-6">
+                    Lucro/Prejuízo estimado =>
+                </dt>
+                <dd class="col-sm-6 normal" id="lucroEstimado">
+
+                </dd>
+            </dl>
+
+            @*<div class="form-group desabilitar">
+                <div class="col-sm-6">
+                    <label asp-for="NivelRisco" class="control-label"></label>
+                    <select asp-for="NivelRisco" class="form-control noArrow" asp-items="@ViewBag.NivelRisco" disabled="disabled"><option value="">Selecione</option></select>
+                </div>
+                <input type="hidden" name="IdNivelRisco" value="@ViewBag.IdNivelRisco" />
+            </div>*@
+            @*<div class="form-group desabilitar">
+                <div class="col-sm-6">
+                    <label asp-for="CustoServicoFrete" class="control-label"></label>
+                    <select asp-for="CustoServicoFrete" class="form-control noArrow" asp-items="ViewBag.CustoServicoFrete" disabled="disabled"><option value="">Selecione</option></select>
+                    <input type="hidden" name="IdCusto" value="@ViewBag.IdCusto" />
+                    <label class="control-label">* Custo = por km rodado</label>
+                </div>
+            </div>*@
+            @*<div class="form-group desabilitar">
+                <div class="col-sm-6">
+                    <label asp-for="AtributoPrecoPrazo" class="control-label"></label>
+                    <select asp-for="AtributoPrecoPrazo" class="form-control" asp-items="ViewBag.AtributoPrecoPrazo"><option value="">Selecione</option></select>
+                </div>
+                <label class="control-label">* Preço do Lance = Custos + Despesas + Lucro</label>
+
+            </div>*@
+            @*<dl class="row desabilitar">
+                <dt class="col-sm-5">
+                    Lucro/Prejuízo estimado =>
+                </dt>
+                <dd class="col-sm-6 normal" id="lucroEstimado">
+
+                </dd>
+            </dl>*@
+            <div class="form-group" id="botoes">
+                <input type="submit" value="Submeter" class="btn btn-primary" />
+                <a id="naoSubmeter" class="btn btn-danger" style="cursor:pointer;color:white">Não Submeter</a>
+            </div>
+        </form>
+        <form asp-action="NaoSubmissao" id="formulario2">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="IdLeilao" value="@ViewBag.IdLeilao " />
+            <div class="form-group habilitar" style="display:none">
+                <label class="control-label">Motivo da não submissão</label>
+                <select class="form-control" name="IdJustificativa">
+                    <option value="" selected="selected">Selecione</option>
+                    @foreach (var item in (SelectList)ViewBag.IdJustificativa)
+                    {
+                        <option value="@(item.Value)">@item.Text</option>
+                    }
+                    }
+                </select>
+            </div>
+            <div class="form-group habilitar" style="display:none">
+                <input type="submit" value="Salvar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+    <div class="col-sm-7">
+        <p><l2><b>Para facilitar o entendimento e a dinâmica do jogo foi selecionado automaticamente as variáveis abaixo:</b></l2></p>
+        <ul>
+            @{
+                if (ViewBag.IdTipoLeilao == 1)
+                {
+                    <li style="color:blue">Modelo de Leilão Reverso (LR) <b>(sequencial)</b>- Selado de primeiro preço - o lance é sigiloso e aberto na data do fechamento, quem fizer a melhor oferta (preço e prazo) será o vencedor e recebe pelo menor preço de lance</li>
+                }
+                else if (ViewBag.IdTipoLeilao == 2)
+                {
+                    <li  style="color:blue">Modelo de Leilão Reverso (LR) <b>(sequencial)</b> - Selado de segundo preço - o lance é sigiloso e aberto na data do fechamento, quem fizer a melhor oferta (preço e prazo) será o vencedor e recebe pelo segundo menor preço de lance</li>
+                }
+                else if (ViewBag.IdTipoLeilao == 3)
+                {
+                    <li style="color:blue">Modelo de Leilão Reverso (LR) <b>(sequencial)</b> - Aberto de lance crescente - o lance não é sigiloso e deve ser submetido a cada rodada. É estipulado um valor mínimo inicial e aumentado automaticamente a cada rodada até que fique um ou mais licitante interessado. Serão 3 rodadas de 2 minutos, o fornecedor pode submeter em qualquer rodada e ao final da 3ª rodada o que submeter a melhor oferta será o vencedor.</li>
+
+                }
+                else if (ViewBag.IdTipoLeilao == 4)
+                {
+                    <li style="color:blue">Modelo de Leilão Reverso (LR) <b>(sequencial)</b>: Aberto de lance decrescente - o lance não é sigiloso e deve ser submetido a cada rodada. É estipulado um valor máximo inicial e diminuído automaticamente a cada rodada até que fique um ou mais licitante interessado. Serão 3 rodadas de 2 minutos, o fornecedor pode submeter em qualquer rodada e ao final da 3ª rodada o que submeter a melhor oferta será o vencedor.</li>
+                }
+
+
+            }
+            <li>Indicador de Risco <b>(automatica, não selecionável) </b>- é a disposição ao risco ou não. Dependendo do nível de risco o fornecedor poderá submeter um lance apropriado ou até mesmo cancelar e submeter outro</li>
+            <li>Custo Serviço Frete <b>(automatica, não selecionável) </b>- é o custo por km rodado para efetuar a entrega</li>
+            <li>Atributo Preço e Prazo <b>(deve ser selecionado)</b>- é a composição de Preço do frete de acordo com o prazo de entrega. Selecione levando em conta o modelo de LR, Indicador de Risco e o Custo do frete</li>
+        </ul>
+        <p><L2><b>Ações do Comprador:</b></L2></p>
+        <ul>
+            <li>Submeter - confirmar o atributo de preço e prazo para o LR</li>
+            <li>Não Submeter - neste caso você seleciona o motivo por não submeter e o sistema regera as valiáveis aleatorias novamente para você tentar submeter</li>
+        </ul>
+        <h5>Últimos 3 lances ganhadores de Leilões Reversos</h5>
+        <table class="table" style="font-size:12px">
+            <thead>
+                <tr>
+                    <th>
+                        Dt. Fechamento LR
+                    </th>
+                    <th>
+                        Modelo de LR
+                    </th>
+                    <th>
+                        Prioridade do comprador
+                    </th>
+                    <th>
+                        Lance
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.HistoricoLeilaoMV != null)
+                {
+                    @foreach (var item in (List<HistoricoLeilaoMV>)ViewBag.HistoricoLeilaoMV)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DataFechamento)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TipoLeilao)
+                            </td>
+                            <td>
+                                @if (item.IdOpcaoComprador == 1)
+                                {
+                                    @Html.Raw("Menor preço")
+                                }
+                                else if (item.IdOpcaoComprador == 2)
+                                {
+                                    @Html.Raw("Menor prazo")
+                                }
+                                else if (item.IdOpcaoComprador == 3)
+                                {
+                                    @Html.Raw("Menor preço e prazo")
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DescAtributoPrecoPrazo)
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+
+    </div>
+</div>
+ 
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script type="text/javascript">
+            var idNivelRisco = '@ViewBag.IdNivelRisco';
+            var idCusto = '@ViewBag.IdCusto';
+            $("#naoSubmeter").click(function () {
+                $('#botoes').hide();
+                $('.desabilitar').hide();
+          //      $('.desabilitar').attr('disabled', 'disabled');
+                $('.habilitar').show();
+            });
+            $("#AtributoPrecoPrazo").change(function () {
+                let valor = $(this).val();
+                if (valor != "") {
+                    $("#lucroEstimado").removeClass("normal");
+                    $("#lucroEstimado").removeClass("prejuizo");
+                    $("#lucroEstimado").removeClass("lucro");
+                    $("#lucroEstimado").removeClass("semlucro");
+                    if (idCusto == '1' && valor == "1") {
+                        $("#lucroEstimado").addClass("prejuizo");
+                        $('#lucroEstimado').text("R$ -0,18 - prejuízo baixo");
+                    }
+                    if (idCusto == '2' && valor == "1") {
+                        $("#lucroEstimado").addClass("prejuizo");
+                        $('#lucroEstimado').text("R$ -0,38 - prejuízo médio");
+                    }
+                    if (idCusto == '3' && valor == "1") {
+                        $("#lucroEstimado").addClass("prejuizo");
+                        $('#lucroEstimado').text("R$ -0,68 - prejuízo alto");
+                    }
+                    else if (idCusto == '1' && valor == "2") {
+                        $("#lucroEstimado").addClass("prejuizo");
+                        $('#lucroEstimado').text("R$ -0,10 - prejuízo baixo");
+                    }
+                    else if (idCusto == '2' && valor == "2") {
+                        $("#lucroEstimado").addClass("prejuizo");
+                        $('#lucroEstimado').text("R$ -0,30 - prejuízo médio");
+                    }
+                    else if (idCusto == '3' && valor == "2") {
+                        $("#lucroEstimado").addClass("prejuizo");
+                        $('#lucroEstimado').text("R$ -0,60 - prejuízo alto");
+                    }
+                    else if (idCusto == '1' && valor == "3") {
+                        $("#lucroEstimado").addClass("prejuizo");
+                        $('#lucroEstimado').text("R$ -0,02 - prejuízo baixo");
+                    }
+                    else if (idCusto == '2' && valor == "3") {
+                        $("#lucroEstimado").addClass("prejuizo");
+                        $('#lucroEstimado').text("R$ -0,23 - prejuízo médio");
+                    }
+                    else if (idCusto == '3' && valor == "3") {
+                        $("#lucroEstimado").addClass("prejuizo");
+                        $('#lucroEstimado').text("R$ -0,53 - prejuízo alto");
+                    }
+                    else if (idCusto == '1' && valor == "4") {
+                        $("#lucroEstimado").addClass("lucro");
+                        $('#lucroEstimado').text("R$ 0,10 - lucro baixo");
+                    }
+                    else if (idCusto == '2' && valor == "4") {
+                        $("#lucroEstimado").addClass("prejuizo");
+                        $('#lucroEstimado').text("R$ -0,10 - prejuízo baixo");
+                    }
+                    else if (idCusto == '3' && valor == "4") {
+                        $("#lucroEstimado").addClass("prejuizo");
+                        $('#lucroEstimado').text("R$ -0,40 - prejuízo alto");
+                    }
+                    else if (idCusto == '1' && valor == "5") {
+                        $("#lucroEstimado").addClass("lucro");
+                        $('#lucroEstimado').text("R$ 0,20 - lucro baixo");
+                    }
+                    else if (idCusto == '2' && valor == "5") {
+                        $("#lucroEstimado").addClass("semlucro");
+                        $('#lucroEstimado').text("R$ 0,00 - sem lucro ou prejuízo");
+                    }
+                    else if (idCusto == '3' && valor == "5") {
+                        $("#lucroEstimado").addClass("prejuizo");
+                        $('#lucroEstimado').text("R$ -0,30 - prejuízo baixo");
+                    }
+                    else if (idCusto == '1' && valor == "6") {
+                        $("#lucroEstimado").addClass("lucro");
+                        $('#lucroEstimado').text("R$ 0,30  - lucro médio");
+                    }
+                    else if (idCusto == '2' && valor == "6") {
+                        $("#lucroEstimado").addClass("lucro");
+                        $('#lucroEstimado').text("R$ 0,10  - lucro baixo");
+                    }
+                    else if (idCusto == '3' && valor == "6") {
+                        $("#lucroEstimado").addClass("prejuizo");
+                        $('#lucroEstimado').text("R$ -0,20 - prejuízo baixo");
+                    }
+                    else if (idCusto == '1' && valor == "7") {
+                        $("#lucroEstimado").addClass("lucro");
+                        $('#lucroEstimado').text("R$ 0,38  - lucro médio");
+                    }
+                    else if (idCusto == '2' && valor == "7") {
+                        $("#lucroEstimado").addClass("lucro");
+                        $('#lucroEstimado').text("R$ 0,18  - lucro baixo");
+                    }
+                    else if (idCusto == '3' && valor == "7") {
+                        $("#lucroEstimado").addClass("prejuizo");
+                        $('#lucroEstimado').text("R$ -0,13  - prejuízo baixo");
+                    }
+                    else if (idCusto == '1' && valor == "8") {
+                        $("#lucroEstimado").addClass("lucro");
+                        $('#lucroEstimado').text("R$ 0,50  - lucro alto");
+                    }
+                    else if (idCusto == '2' && valor == "8") {
+                        $("#lucroEstimado").addClass("lucro");
+                        $('#lucroEstimado').text("R$ 0,30  - lucro médio");
+                    }
+                    else if (idCusto == '3' && valor == "8") {
+                        $("#lucroEstimado").addClass("semlucro");
+                        $('#lucroEstimado').text("R$ 0,00  - sem lucro ou prejuízo");
+                    }
+                    else if (idCusto == '1' && valor == "9") {
+                        $("#lucroEstimado").addClass("lucro");
+                        $('#lucroEstimado').text("R$ 0,63  - lucro alto");
+                    }
+                    else if (idCusto == '2' && valor == "9") {
+                        $("#lucroEstimado").addClass("lucro");
+                        $('#lucroEstimado').text("R$ 0,43  - lucro médio");
+                    }
+                    else if (idCusto == '3' && valor == "9") {
+                        $("#lucroEstimado").addClass("lucro");
+                        $('#lucroEstimado').text("R$ 0,13  - lucro baixo");
+                    }
+                } else {
+                    $("#lucroEstimado").addClass("normal");
+                    $('#lucroEstimado').text("");
+                }
+            });
+
+
+    function getTimeRemaining(endtime) {
+        var dataAtual = Date.parse(new Date());
+        var dataFinal = Date.parse(endtime);
+        var t = dataFinal - dataAtual;
+        //console.log("getTimeRemaining  dataAtual : " + dataAtual.toLocaleString());
+        //console.log("getTimeRemaining  dataFinal : " + dataFinal.toLocaleString());
+        //console.log("getTimeRemaining  t : " + t.toLocaleString());
+        var seconds = Math.floor((t / 1000) % 60);
+        var minutes = Math.floor((t / 1000 / 60) % 60);
+        return {
+            'total': t,
+            'minutes': minutes,
+            'seconds': seconds
+        };
+    }
+
+    function initializeClock(id, endtime) {
+        var clock = document.getElementById(id);
+        var minutesSpan = clock.querySelector('.minutesClock');
+        var secondsSpan = clock.querySelector('.secondsClock');
+        function updateClock() {
+            var t = getTimeRemaining(endtime);
+            minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+            secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+            console.log("t.total : " + t.total);
+            if (t.total <= 0) {
+                console.log("initializeClock t.total <= 0: " + t.total);
+                clearInterval(timeinterval);
+                $("#mensagemInicial").show();
+                $(".minutesClock").text("00");
+                $(".secondsClock").text("00");
+                $('.habilitar').hide();
+                bootbox.alert("O LR atual já foi encerrado. Por favor vai para Página Inicial e aguarde convite de novo LR");
+                return false;
+            }
+        }
+        updateClock();
+        var timeinterval = setInterval(updateClock, 1000);
+    }
+
+        var DAYS = 1;
+        var HOURS = 1;
+        var MINUTES = 0;
+        var SECONDS = 0;
+        var MINUTESRODADA = 0;
+        var SECONDSRODADA = 0;
+        MINUTES = @ViewBag.MinutoEncerramento;
+        SECONDS = @ViewBag.SegundoEncerramento;
+        var MILLISECONDS = 1000;
+    var currentTime = Date.parse('@ViewBag.DataFechamento');
+    //console.log("MINUTES : " + MINUTES );
+    //console.log("SECONDS : " + SECONDS);
+    //console.log("currentTime : " + currentTime.toLocaleString());
+        var deadline = new Date(currentTime + DAYS * HOURS * MINUTES * SECONDS * MILLISECONDS);
+    if (SECONDS > 0 || MINUTES > 0) {
+        console.log("deadline : " + deadline);
+        initializeClock('clockdiv', deadline.toLocaleString());
+        } else {
+            $("#mensagemInicial").show();
+            $(".minutesClock").text("00");
+            $(".secondsClock").text("00");
+            $('.habilitar').hide();
+            bootbox.alert("O LR atual já foi encerrado. Por favor vai para Página Inicial e aguarde convite de novo LR");
+    }
+
+</script>
+    }

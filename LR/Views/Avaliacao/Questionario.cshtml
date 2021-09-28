@@ -1,0 +1,252 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<h1> Questionário de avaliação do Jogo de LR.</h1>
+<br />
+<div class="container">
+    @*    <form action="/Avaliacao/Questionario" method="post">*@
+    <form asp-action="Questionario" class="form-horizontal"  id="formQuestionario" method="post">
+        <div class="col-md-10 column">
+            <div class="progress">
+                <div class="progress-bar" style="width: 100%;" role="progressbar"></div>
+            </div>
+            <input type="hidden" name="IdUsuario" value="@ViewBag.IdUsuario" />
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 class="panel-title">1-Qual é a sua faixa de idade?</h4>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r1"> 18 a 25 anos</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r1"> 26 a 30 anos</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r1"> 31 a 35 anos</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r1"> 36 a 45 anos</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r1"> 46 a 55 anos</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r1"> Acima de 55 anos</label>
+                </div>
+                <input type="hidden" name="r1i" id="r1i" />
+            </div>
+            <br />
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        2-Qual é o tipo de relacionamento com o contratante do serviço (comprador) você acredita que o leilão reverso proporciona ao fornecedor de logística?
+                    </h4>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r2"> Longa duração</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r2"> Média duração</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r2"> Curta duração</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r2"> Não sabe informar</label>
+                </div>
+                <input type="hidden" name="r2i" id="r2i" />
+            </div>
+            <br />
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 clas+s="panel-title">
+                        3-Qual(is) o(s) modelo(s) de solicitação de fechamento (negociação) de transporte você acredita ser o mais eficiente por parte do fornecedor de logística?
+                    </h4>
+                </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" name="r3"> Por website ou app intermediário de oferta de frete</label>
+                </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" name="r3"> Presencial por intermediário de oferta de frete</label>
+                </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" name="r3"> Por website ou app direto com o embarcador(contratante)</label>
+                </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" name="r3"> Presencial e direto com o embarcador(contratante)</label>
+                </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" name="r3"> Não sabe informar</label>
+                </div>
+                <input type="hidden" name="r3i" id="r3i" />
+            </div>
+            <br />
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        4-Qual(is) o(s) formato(s) você acredita que seria(m) a(s) melhor(es) opção(ões) para o fornecedor de logística participar de um leilão reverso?
+                    </h4>
+                </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" name="r4"> Preço de forma fechada (outros concorrentes não podem ver) e o vencedor recebendo pelo valor da melhor oferta</label>
+                </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" name="r4"> Preço de forma fechada (outros concorrentes não podem ver) e o vencedor recebendo pelo valor da segunda melhor oferta</label>
+                </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" name="r4"> Preço de forma aberta (outros concorrentes podem ver) com rodadas de lances crescentes até chegar ao melhor oferta (vencedor)</label>
+                </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" name="r4"> Preço de forma aberta (outros concorrentes podem ver) com rodadas de lances decrescentes até chegar ao melhor oferta (vencedor)</label>
+                </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" name="r4"> Preço fixado pelo embarcador, não pode mudar</label>
+                </div>
+                <input type="hidden" name="r4i" id="r4i" />
+            </div>
+            <br />
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        5-Quantas etapas de negociação seria mais indicado ao fornecedor de logística participar de um leilão reverso?
+                    </h4>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r5"> Apenas uma rodada de negociação </label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r5"> Duas rodadas de negociações</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r5"> Mais de duas rodadas </label>
+                </div>
+                <input type="hidden" name="r5i" id="r5i" />
+            </div>
+            <br />
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        6-Você considera atrativo e adequado o fornecedor de logística participar de um leição reverso ?
+                    </h4>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r6"> Sim, totalmente </label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r6"> Sim, parcialmente</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r6"> Não </label>
+                </div>
+                <input type="hidden" name="r6i" id="r6i" />
+            </div>
+            <br />
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 class="panel-title">7-Qual seria a sua avaliação para a utilização deste jogo para conhecer a dinâmica dos modelos de leilão reverso?</h4>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r7"> Muito bom</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r7"> Bom</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r7"> Regular</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r7"> Ruim</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="r7"> Muito ruim</label>
+                </div>
+                <input type="hidden" name="r7i" id="r7i" />
+            </div>
+            <br />
+
+            <a  class="btn btn-primary" id="gravar">Gravar avaliação</a>
+
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript">
+        $("#gravar").click(function () {
+            var r1i = -1;
+            $("input[name=r1]").each(function (i, o) {
+                if ($(this).is(":checked"))
+                     r1i = i;
+            });
+            if (r1i == -1) {
+                bootbox.alert("Por favor responda a pergunta número 1");
+                return;
+            }
+            $("#r1i").val(r1i);
+            var r2i = -1;
+            $("input[name=r2]").each(function (i, o) {
+                if ($(this).is(":checked"))
+                    r2i = i;
+            });
+            if (r2i == -1) {
+                bootbox.alert("Por favor responda a pergunta número 2");
+                return;
+            }
+            $("#r2i").val(r2i);
+            var r3i = [];
+            $("input[name=r3]").each(function (i, o) {
+                if ($(this).is(":checked"))
+                    r3i.push(i);
+            });
+            if (r3i.length == 0) {
+                bootbox.alert("Por favor responda a pergunta número 3");
+                return;
+            }
+            $("#r3i").val(r3i);
+            var r4i = [];
+            $("input[name=r4]").each(function (i, o) {
+                if ($(this).is(":checked"))
+                    r4i.push(i);
+            });
+            if (r4i.length == 0) {
+                bootbox.alert("Por favor responda a pergunta número 4");
+                return;
+            }
+            $("#r4i").val(r4i);
+            var r5i = -1;
+            $("input[name=r5]").each(function (i, o) {
+                if ($(this).is(":checked"))
+                    r5i = i;
+            });
+            if (r5i == -1) {
+                bootbox.alert("Por favor responda a pergunta número 5");
+                return;
+            }
+            $("#r5i").val(r5i);
+            var r6i = -1;
+            $("input[name=r6]").each(function (i, o) {
+                if ($(this).is(":checked"))
+                    r6i = i;
+            });
+            if (r6i == -1) {
+                bootbox.alert("Por favor responda a pergunta número 6");
+                return;
+            }
+            $("#r6i").val(r6i);
+            var r7i = -1;
+            $("input[name=r7]").each(function (i, o) {
+                if ($(this).is(":checked"))
+                    r7i = i;
+            });
+            if (r7i == -1) {
+                bootbox.alert("Por favor responda a pergunta número 6");
+                return;
+            }
+            $("#r7i").val(r7i);
+            $("#formQuestionario").submit();
+        });
+    </script>
+}

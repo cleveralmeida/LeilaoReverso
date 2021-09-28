@@ -1,0 +1,133 @@
+﻿@model LR.Models.ResumoJogoMV
+@{
+    ViewData["Title"] = "Resumo";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Resumo do jogo</h1>
+</div>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Perfil atual
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.RoleId == "2")
+            {
+                @Html.Raw("Comprador")
+            }
+            else if (Model.RoleId == "3")
+            {
+                @Html.Raw("Fornecedor")
+            }
+        </dd>
+        <dt class="col-sm-2">
+            Qtd LRs Criados
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.QtdLeilaoAberto)
+        </dd>
+        <dt class="col-sm-2">
+            Qtd LRs Cancelados
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.QtdLeilaoCancelado)
+        </dd>
+        <dt class="col-sm-2">
+            Qtd de jogos partipou como fornecedor
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.QtdJogos)
+        </dd>
+        <dt class="col-sm-2">
+            Qtd de lances submetidos
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.QtdLancesValidos)
+        </dd>
+        <dt class="col-sm-2">
+            Qtd de lances cancelados
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.QtdLancesCancelados)
+        </dd>
+        <dt class="col-sm-2">
+            Qtd de jogos que foi fornecedor vencedor
+            @*@if (Model.RoleId == "2")
+            {
+                @Html.Raw("Qtd de jogos que obteve vencedor(es)")
+            }
+            else if (Model.RoleId == "3")
+            {
+                @Html.Raw("Qtd de jogos que foi vencedor")
+            }*@
+
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.QtdGanhou)
+        </dd>
+        @*<dt class="col-sm-2">
+            Status do jogador
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.IdStatusGame == 1)
+            {
+                @if (Model.RoleId == "2")
+                {
+                    @if (Model.QtdJogos > 0)
+                    {
+                        @Html.Raw("Já tem fornecedor atribuido ao LR do comprador")
+                    }
+                    else
+                    {
+                        @Html.Raw("Foi cadastrado mas ainda não criou LR")
+                    }
+                }
+                else if (Model.RoleId == "3")
+                {
+                    @if (Model.QtdJogos > 0)
+                    {
+                        @Html.Raw("Já tem fornecedor atribuido ao LR do comprador")
+                    }
+                    else
+                    {
+                        @Html.Raw("Foi cadastrado mas ainda não criou LR")
+                    }
+                }
+            }
+            else if (Model.IdStatusGame == 2)
+            {
+                @if (Model.RoleId == "2")
+                {
+                    @Html.Raw("Já tem fornecedores atribuidos ao LR do comprador")
+                }
+                else if (Model.RoleId == "3")
+                {
+                    @Html.Raw("Já tem fornecedores atribuidos ao LR do comprador")
+                }
+            }
+            else if (Model.IdStatusGame == 3)
+            {
+                @Html.Raw("Já realizou um ou mais jogos")
+            }
+            else if (Model.IdStatusGame == 4)
+            {
+                @Html.Raw("Já avaliou o jogo")
+            }
+            else if (Model.IdStatusGame == 5)
+            {
+                @Html.Raw("Já submeteu um ou mais lances")
+            }
+            else if (Model.IdStatusGame == 6)
+            {
+                @Html.Raw("Já criou um ou mais LR")
+            }
+            else
+            {
+                @Html.Raw("Usuário não cadastrado completamente")
+            }
+        </dd>*@
+    </dl>
+</div>
