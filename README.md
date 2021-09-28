@@ -16,8 +16,8 @@ II) Configurar a string de conexão do banco de dados (DefaultConnection da apps
 III) Cadastrar jogadores (Comprador e Fornecedores) - primeiro cadastre um comprador e depois cadastre os fornecedores de forma que estejam relacionados ao comprador. 
 Referencie os fornecedores no mesmo Curso e Nível de ensino.
 
-![CadastroComprador](https://user-images.githubusercontent.com/10202296/135124451-5fbd14da-1225-453b-8dc4-71ac4ead9dff.PNG)
-![CadastroFornecedor](https://user-images.githubusercontent.com/10202296/135125793-0fc555c2-1cac-42b4-9ef3-ed33ecf7fc91.PNG)
+![CadastroComprador](https://user-images.githubusercontent.com/10202296/135170870-f64cba3d-faf6-426d-ab46-98e4c4693626.PNG)
+ 
 
 IV) Etapas de execução do jogo:
   1.	Comprador e fornecedores efetuavam login e vão para a página inicial;
