@@ -9,7 +9,8 @@ Server 2019.
 
 Etapas para utilização do software
 
-I) Download e execução do script do banco de dados
+I) Download e execução do script do banco de dados:
+https://github.com/cleveralmeida/LeilaoReverso/blob/0a23f5995db64d6ca65dabbbd609db1691ff646c/LR/leilaoreverso.sql
 
 II) Configurar a string de conexão do banco de dados (DefaultConnection da appsettings.Development) conforme o banco de dados onde executou o script do banco de dados; 
 
