@@ -1,6 +1,6 @@
 # Jogo de Leilao Reverso
 
-Esta aplicação foi desenvolvida por Clever Divino Inácio de Almeida como instrumento de pesquisa para defesa de um mestrado em Engenharia de Produção e Sistemas da PUC Goiás. 
+Esta aplicação foi desenvolvida por Clever Divino Inácio de Almeida como instrumento de pesquisa para defesa de um mestrado em Engenharia de Produção e Sistemas da PUC Goiás, sob a orientação do Professor Ricardo Luiz Machado. 
 O objetivo geral desta pesquisa é avaliar a atratividade dos modelos mais utilizados de LR através de experimento aplicado por meio de uma dinâmica de jogos empresariais em 
 contexto de fornecimento de serviços de logística.
 
